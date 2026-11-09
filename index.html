@@ -12,9 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .hero-gradient {
-            background: linear-gradient(135deg, #0a192f 0%, #1e3a8a 50%, #0284c7 100%);
-        }
         .glass-card {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(12px);
@@ -89,49 +86,16 @@
 
         <!-- VIEW: ÚVODNÍ STRÁNKA -->
         <div id="view-home" class="view-section">
-            <!-- Hero Banner odpovídající designu -->
-            <section class="relative hero-gradient text-white py-12 lg:py-20 overflow-hidden border-b border-slate-800">
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-                    <div class="max-w-2xl text-center lg:text-left">
-                        <div class="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-inner">
-                            <i class="fa-solid fa-shield-check"></i> Přehled ověřených SMS portálů
-                        </div>
-                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-4">
-                            Pošli SMS zprávu <span class="bg-gradient-to-r from-cyan-400 to-sky-300 bg-clip-text text-transparent">ZDARMA</span>
-                        </h1>
-                        <p class="text-slate-300 text-base sm:text-lg mb-8 leading-relaxed">
-                            Přehled ověřených portálů, kde můžeš posílat SMS zdarma do českých mobilních sítí (O2, T-Mobile, Vodafone) bez skrytých poplatků.
-                        </p>
-                        <!-- Rychlé USPčka -->
-                        <div class="flex flex-wrap justify-center lg:justify-start gap-4 text-xs sm:text-sm font-medium text-slate-200">
-                            <span class="flex items-center gap-2 bg-slate-900/60 border border-slate-700 px-3.5 py-2 rounded-xl">
-                                <i class="fa-solid fa-circle-check text-cyan-400"></i> Ověřené portály
-                            </span>
-                            <span class="flex items-center gap-2 bg-slate-900/60 border border-slate-700 px-3.5 py-2 rounded-xl">
-                                <i class="fa-solid fa-circle-check text-cyan-400"></i> Aktuální informace
-                            </span>
-                            <span class="flex items-center gap-2 bg-slate-900/60 border border-slate-700 px-3.5 py-2 rounded-xl">
-                                <i class="fa-solid fa-circle-check text-cyan-400"></i> Přehledné a zdarma
-                            </span>
-                        </div>
-                    </div>
-                    <div class="w-full lg:w-auto flex justify-center">
-                        <div class="relative w-72 sm:w-80 h-44 sm:h-52 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/30 border border-cyan-500/30 p-6 flex flex-col justify-between shadow-2xl backdrop-blur-md">
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-cyan-400 tracking-wider uppercase">SMS brány online</span>
-                                <i class="fa-solid fa-signal text-cyan-400"></i>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-black text-white mb-1" id="heroActiveCount">6 bran</div>
-                                <p class="text-xs text-slate-300">Připraveno k okamžitému použití</p>
-                            </div>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-700/55 text-xs text-slate-400">
-                                <span>Aktualizováno denně</span>
-                                <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Online</span>
-                            </div>
-                        </div>
-                    </div>
+            
+            <!-- VÁŠ PŘESNÝ GRAFICKÝ BANNER (PC vs MOBIL) -->
+            <section class="w-full bg-slate-950 border-b border-slate-800 overflow-hidden">
+                <!-- Pro mobilní zařízení (zobrazí se pouze na mobilech < 768px) -->
+                <div class="block md:hidden w-full">
+                    <img src="banner-mobil.png" alt="SMS ZDARMA ONLINE - Mobilní banner" class="w-full h-auto object-cover">
+                </div>
+                <!-- Pro stolní počítače a tablety (zobrazí se od 768px výše) -->
+                <div class="hidden md:block w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <img src="banner-pc.png" alt="SMS ZDARMA ONLINE - Desktop banner" class="w-full h-auto rounded-2xl shadow-2xl border border-slate-800 object-cover">
                 </div>
             </section>
 
@@ -255,15 +219,13 @@
             </section>
         </div>
 
-        <!-- VIEW: SMS PORTÁLY (samostatná záložka) -->
+        <!-- VIEW: SMS PORTÁLY -->
         <div id="view-gateways" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <div class="mb-8">
                 <h1 class="text-3xl font-extrabold mb-2">Všechny SMS brány</h1>
                 <p class="text-slate-400 text-sm">Detailní katalog všech ověřených a funkčních portálů pro bezplatné odesílání zpráv.</p>
             </div>
-            <div id="fullGatewaysGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Vykreslí se dynamicky -->
-            </div>
+            <div id="fullGatewaysGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
         <!-- VIEW: UŽITEČNÉ ODKAZY -->
@@ -272,9 +234,7 @@
                 <h1 class="text-3xl font-extrabold mb-2">Užitečné odkazy</h1>
                 <p class="text-slate-400 text-sm">Zajímavé internetové stránky, telekomunikační služby a související projekty.</p>
             </div>
-            <div id="linksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Vykreslí se dynamicky -->
-            </div>
+            <div id="linksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
         <!-- VIEW: KNIHA NÁVŠTĚV -->
@@ -283,8 +243,6 @@
                 <h1 class="text-3xl font-extrabold mb-2">Kniha návštěv</h1>
                 <p class="text-slate-400 text-sm">Zanechte nám vzkaz, podělte se o zkušenosti s SMS branami nebo napište komentář.</p>
             </div>
-
-            <!-- Formulář pro přidání vzkazu -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-10 shadow-xl">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-cyan-400"></i> Přidat nový příspěvek
@@ -306,11 +264,7 @@
                     </div>
                 </form>
             </div>
-
-            <!-- Seznam schválených příspěvků -->
-            <div class="space-y-4" id="guestbookEntriesList">
-                <!-- Vykreslí se dynamicky -->
-            </div>
+            <div class="space-y-4" id="guestbookEntriesList"></div>
         </div>
 
     </main>
@@ -359,12 +313,9 @@
     </footer>
 
 
-    <!-- ========================================== -->
-    <!-- PWA ADMINISTRACE (MODAL / FULL SCREEN)      -->
-    <!-- ========================================== -->
+    <!-- PWA ADMINISTRACE (MODAL) -->
     <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md overflow-y-auto">
         <div class="min-h-screen px-4 py-8 max-w-6xl mx-auto flex flex-col">
-            <!-- Admin Header -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xl">
@@ -385,7 +336,7 @@
                 </div>
             </div>
 
-            <!-- Login Screen (pokud není přihlášen) -->
+            <!-- Login Screen -->
             <div id="adminLoginScreen" class="flex-grow flex items-center justify-center py-12">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 max-w-md w-full shadow-2xl">
                     <div class="text-center mb-6">
@@ -407,9 +358,8 @@
                 </div>
             </div>
 
-            <!-- Admin Dashboard (pokud je přihlášen) -->
+            <!-- Admin Dashboard -->
             <div id="adminDashboard" class="hidden space-y-6">
-                <!-- Přehledové karty v administraci -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center">
                         <span class="block text-xs font-semibold text-slate-400 mb-1">Celkem SMS bran</span>
@@ -429,7 +379,6 @@
                     </div>
                 </div>
 
-                <!-- Záložky administrace -->
                 <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-4">
                     <button onclick="switchAdminTab('gateways')" id="admTabBtn-gateways" class="adm-tab-btn bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">
                         <i class="fa-solid fa-globe mr-1.5"></i> Správa SMS bran
@@ -445,7 +394,7 @@
                     </button>
                 </div>
 
-                <!-- TAB CONTENT: SMS BRÁNY -->
+                <!-- TAB: SMS BRÁNY -->
                 <div id="admTab-gateways" class="adm-tab-content space-y-6">
                     <div class="flex justify-between items-center bg-slate-900 border border-slate-800 rounded-2xl p-4">
                         <h3 class="text-base font-bold text-white">Seznam SMS bran k úpravě</h3>
@@ -453,7 +402,6 @@
                             <i class="fa-solid fa-plus"></i> Přidat nový SMS portál
                         </button>
                     </div>
-
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs">
@@ -466,31 +414,26 @@
                                         <th class="p-4 text-right">Akce</th>
                                     </tr>
                                 </thead>
-                                <tbody id="admGatewaysTableBody" class="divide-y divide-slate-800">
-                                    <!-- Generováno JS -->
-                                </tbody>
+                                <tbody id="admGatewaysTableBody" class="divide-y divide-slate-800"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB CONTENT: KNIHA NÁVŠTĚV -->
+                <!-- TAB: KNIHA NÁVŠTĚV -->
                 <div id="admTab-guestbook" class="adm-tab-content hidden space-y-6">
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
                         <h3 class="text-base font-bold text-white mb-1">Moderování knihy návštěv</h3>
                         <p class="text-xs text-slate-400">Schvalujte nebo mažte příspěvky návštěvníků.</p>
                     </div>
-                    <div id="admGuestbookList" class="space-y-4">
-                        <!-- Generováno JS -->
-                    </div>
+                    <div id="admGuestbookList" class="space-y-4"></div>
                 </div>
 
-                <!-- TAB CONTENT: REKLAMY -->
+                <!-- TAB: REKLAMY -->
                 <div id="admTab-ads" class="adm-tab-content hidden space-y-6">
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
                         <h3 class="text-base font-bold text-white">Nastavení reklamních pozic</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Horní reklama -->
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
                                 <h4 class="text-sm font-bold text-cyan-400">Horní reklamní banner</h4>
                                 <div>
@@ -502,7 +445,6 @@
                                     <input type="text" id="editTopAdLink" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
                                 </div>
                             </div>
-                            <!-- Střední reklama -->
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
                                 <h4 class="text-sm font-bold text-cyan-400">Střední reklamní banner</h4>
                                 <div>
@@ -525,7 +467,7 @@
                     </div>
                 </div>
 
-                <!-- TAB CONTENT: ODKAZY -->
+                <!-- TAB: ODKAZY -->
                 <div id="admTab-links" class="adm-tab-content hidden space-y-6">
                     <div class="flex justify-between items-center bg-slate-900 border border-slate-800 rounded-2xl p-4">
                         <h3 class="text-base font-bold text-white">Správa užitečných odkazů</h3>
@@ -544,9 +486,7 @@
                                         <th class="p-4 text-right">Akce</th>
                                     </tr>
                                 </thead>
-                                <tbody id="admLinksTableBody" class="divide-y divide-slate-800">
-                                    <!-- Generováno JS -->
-                                </tbody>
+                                <tbody id="admLinksTableBody" class="divide-y divide-slate-800"></tbody>
                             </table>
                         </div>
                     </div>
@@ -555,7 +495,7 @@
         </div>
     </div>
 
-    <!-- MODAL: PŘIDÁNÍ / ÚPRAVA SMS BRÁNY -->
+    <!-- MODAL: BRÁNY -->
     <div id="gatewayModal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl my-8">
             <h3 id="gwModalTitle" class="text-lg font-bold text-white mb-4">Přidat nový SMS portál</h3>
@@ -566,16 +506,16 @@
                     <input type="text" id="gwName" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white" placeholder="např. PoslatSMS.cz">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-300 mb-1">URL adresa brány (včetně https://)</label>
+                    <label class="block font-semibold text-slate-300 mb-1">URL adresa brány</label>
                     <input type="url" id="gwUrl" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white" placeholder="https://www.poslatsms.cz">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-300 mb-1">Krátký popis</label>
-                    <textarea id="gwDesc" required rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white" placeholder="Stručný popis služby..."></textarea>
+                    <textarea id="gwDesc" required rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block font-semibold text-slate-300 mb-1">Podporovaní operátoři (čárkou)</label>
+                        <label class="block font-semibold text-slate-300 mb-1">Podporovaní operátoři</label>
                         <input type="text" id="gwOperators" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white" value="O2, T-Mobile, Vodafone">
                     </div>
                     <div>
@@ -602,14 +542,14 @@
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                    <button type="button" onclick="closeGatewayModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl transition">Zrušit</button>
-                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2 rounded-xl transition">Uložit bránu</button>
+                    <button type="button" onclick="closeGatewayModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl">Zrušit</button>
+                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2 rounded-xl">Uložit bránu</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL: PŘIDÁNÍ / ÚPRAVA ODKAZU -->
+    <!-- MODAL: ODKAZY -->
     <div id="linkModal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
             <h3 id="linkModalTitle" class="text-lg font-bold text-white mb-4">Přidat užitečný odkaz</h3>
@@ -632,19 +572,16 @@
                     <input type="text" id="linkCategory" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white" value="Telekomunikační služby">
                 </div>
                 <div class="flex justify-end gap-3 pt-4 border-t border-slate-800">
-                    <button type="button" onclick="closeLinkModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl transition">Zrušit</button>
-                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2 rounded-xl transition">Uložit odkaz</button>
+                    <button type="button" onclick="closeLinkModal()" class="bg-slate-800 text-slate-300 px-4 py-2 rounded-xl">Zrušit</button>
+                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2 rounded-xl">Uložit odkaz</button>
                 </div>
             </form>
         </div>
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- JAVASCRIPT LOGIKA                          -->
-    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIKA -->
     <script>
-        // Výchozí data pro aplikaci
         const DEFAULT_GATEWAYS = [
             { id: 1, name: "PoslatSMS.cz", url: "https://www.poslatsms.cz", desc: "Bezplatné odesílání SMS do českých sítí. Rychlé a spolehlivé.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno", date: "9. 11. 2026" },
             { id: 2, name: "SMSKit.cz", url: "https://www.smskit.cz", desc: "Odesílání SMS zdarma, s jednoduchým formulářem a ochranou proti spamu.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno", date: "9. 11. 2026" },
@@ -674,7 +611,6 @@
             midLink: "#"
         };
 
-        // Načtení dat z localStorage nebo inicializace
         let gateways = JSON.parse(localStorage.getItem('sms_gateways')) || DEFAULT_GATEWAYS;
         let links = JSON.parse(localStorage.getItem('sms_links')) || DEFAULT_LINKS;
         let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || DEFAULT_GUESTBOOK;
@@ -683,7 +619,6 @@
 
         let isAdminLoggedIn = sessionStorage.getItem('sms_admin_logged') === 'true';
 
-        // Inicializace při načtení stránky
         document.addEventListener('DOMContentLoaded', () => {
             renderGateways();
             renderLinks();
@@ -693,26 +628,19 @@
             checkAdminState();
         });
 
-        // Přepínání pohledů (Views)
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(`view-${viewName}`).classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Mobilní menu toggle
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
+            document.getElementById('mobileMenu').classList.toggle('hidden');
         }
 
-        // Vykreslení SMS bran na úvodu i v záložce
         function renderGateways() {
             const gridHome = document.getElementById('gatewaysGrid');
             const gridFull = document.getElementById('fullGatewaysGrid');
-            const heroCount = document.getElementById('heroActiveCount');
-            
-            if(heroCount) heroCount.innerText = `${gateways.length} bran`;
 
             const query = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : '';
             const opFilter = document.getElementById('filterOperator') ? document.getElementById('filterOperator').value : 'all';
@@ -750,9 +678,7 @@
                                 </div>
                             </div>
                             <p class="text-xs text-slate-300 mb-4 leading-relaxed">${gw.desc}</p>
-                            <div class="flex flex-wrap gap-1.5 mb-4">
-                                ${opsHtml}
-                            </div>
+                            <div class="flex flex-wrap gap-1.5 mb-4">${opsHtml}</div>
                             <div class="text-[11px] text-slate-400 space-y-1 mb-5 border-t border-slate-800/80 pt-3">
                                 <div class="flex justify-between"><span>Max. délka:</span> <strong class="text-slate-200">${gw.maxChars}</strong></div>
                                 <div class="flex justify-between"><span>Registrace:</span> <strong class="text-slate-200">${gw.reg}</strong></div>
@@ -769,11 +695,8 @@
             if(gridFull) gridFull.innerHTML = html;
         }
 
-        function filterGateways() {
-            renderGateways();
-        }
+        function filterGateways() { renderGateways(); }
 
-        // Vykreslení užitečných odkazů
         function renderLinks() {
             const grid = document.getElementById('linksGrid');
             if(!grid) return;
@@ -791,7 +714,6 @@
             `).join('');
         }
 
-        // Vykreslení knihy návštěv
         function renderGuestbook() {
             const list = document.getElementById('guestbookEntriesList');
             if(!list) return;
@@ -812,25 +734,16 @@
             `).join('') : '<p class="text-slate-400 text-xs text-center py-8">Zatím zde nejsou žádné schválené vzkazy.</p>';
         }
 
-        // Přidání vzkazu do knihy návštěv
         function addGuestbookEntry(e) {
             e.preventDefault();
             const author = document.getElementById('gbAuthor').value;
             const message = document.getElementById('gbMessage').value;
-            const newEntry = {
-                id: Date.now(),
-                author,
-                message,
-                date: new Date().toLocaleDateString('cs-CZ'),
-                approved: false // Vyžaduje schválení v administraci
-            };
-            guestbook.unshift(newEntry);
+            guestbook.unshift({ id: Date.now(), author, message, date: new Date().toLocaleDateString('cs-CZ'), approved: false });
             localStorage.setItem('sms_guestbook', JSON.stringify(guestbook));
             alert('Vzkaz byl úspěšně odeslán a čeká na schválení administrátorem.');
             document.getElementById('guestbookForm').reset();
         }
 
-        // Vykreslení reklam
         function renderAds() {
             if(document.getElementById('topAdText')) document.getElementById('topAdText').innerText = ads.topText;
             if(document.getElementById('topAdLink')) document.getElementById('topAdLink').href = ads.topLink;
@@ -839,148 +752,98 @@
             if(document.getElementById('midAdLink')) document.getElementById('midAdLink').href = ads.midLink;
         }
 
-        // Statistiky
         function updateStatsDisplay() {
             if(document.getElementById('statToday')) document.getElementById('statToday').innerText = visitStats.today.toLocaleString('cs-CZ');
             if(document.getElementById('statMonth')) document.getElementById('statMonth').innerText = visitStats.month.toLocaleString('cs-CZ');
             if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = visitStats.total.toLocaleString('cs-CZ');
         }
 
-
-        // ==========================================
-        // PWA ADMINISTRACE LOGIKA
-        // ==========================================
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
-            checkAdminState();
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
+        // PWA ADMIN LOGIKA
+        function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); checkAdminState(); }
+        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
         function handleAdminLogin(e) {
             e.preventDefault();
-            const pass = document.getElementById('adminPasswordInput').value;
-            if(pass === 'admin123' || pass === 'admin') {
+            if(document.getElementById('adminPasswordInput').value === 'admin123') {
                 isAdminLoggedIn = true;
                 sessionStorage.setItem('sms_admin_logged', 'true');
                 checkAdminState();
-            } else {
-                alert('Nesprávné administrátorské heslo! (výchozí: admin123)');
-            }
+            } else { alert('Nesprávné heslo! (výchozí: admin123)'); }
         }
-
-        function adminLogout() {
-            isAdminLoggedIn = false;
-            sessionStorage.removeItem('sms_admin_logged');
-            checkAdminState();
-        }
-
+        function adminLogout() { isAdminLoggedIn = false; sessionStorage.removeItem('sms_admin_logged'); checkAdminState(); }
         function checkAdminState() {
-            const loginScreen = document.getElementById('adminLoginScreen');
-            const dashboard = document.getElementById('adminDashboard');
             if(isAdminLoggedIn) {
-                loginScreen.classList.add('hidden');
-                dashboard.classList.remove('hidden');
+                document.getElementById('adminLoginScreen').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
                 renderAdminDashboardData();
             } else {
-                loginScreen.classList.remove('hidden');
-                dashboard.classList.add('hidden');
+                document.getElementById('adminLoginScreen').classList.remove('hidden');
+                document.getElementById('adminDashboard').classList.add('hidden');
             }
         }
-
         function switchAdminTab(tabName) {
             document.querySelectorAll('.adm-tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.adm-tab-btn').forEach(el => {
-                el.classList.remove('bg-cyan-500', 'text-slate-950');
-                el.classList.add('bg-slate-900', 'text-slate-300');
-            });
+            document.querySelectorAll('.adm-tab-btn').forEach(el => { el.classList.remove('bg-cyan-500', 'text-slate-950'); el.classList.add('bg-slate-900', 'text-slate-300'); });
             document.getElementById(`admTab-${tabName}`).classList.remove('hidden');
-            const btn = document.getElementById(`admTabBtn-${tabName}`);
-            btn.classList.remove('bg-slate-900', 'text-slate-300');
-            btn.classList.add('bg-cyan-500', 'text-slate-950');
+            document.getElementById(`admTabBtn-${tabName}`).classList.remove('bg-slate-900', 'text-slate-300');
+            document.getElementById(`admTabBtn-${tabName}`).classList.add('bg-cyan-500', 'text-slate-950');
         }
-
         function renderAdminDashboardData() {
-            // Počty
-            const total = gateways.length;
-            const functional = gateways.filter(g => g.status.includes('Funkční')).length;
+            document.getElementById('admCountTotal').innerText = gateways.length;
+            document.getElementById('admCountFunctional').innerText = gateways.filter(g => g.status.includes('Funkční')).length;
             const pendingGb = guestbook.filter(g => !g.approved).length;
-
-            document.getElementById('admCountTotal').innerText = total;
-            document.getElementById('admCountFunctional').innerText = functional;
             document.getElementById('admCountPendingGb').innerText = pendingGb;
             document.getElementById('pendingGbBadge').innerText = pendingGb;
-            document.getElementById('admCountVisits').innerText = visitStats.total.toLocaleString('cs-CZ');
 
-            // Tabulka bran
-            const tbodyGw = document.getElementById('admGatewaysTableBody');
-            tbodyGw.innerHTML = gateways.map(g => `
+            document.getElementById('admGatewaysTableBody').innerHTML = gateways.map(g => `
                 <tr class="border-b border-slate-800 hover:bg-slate-950/50">
-                    <td class="p-4">
-                        <div class="font-bold text-white">${g.name}</div>
-                        <a href="${g.url}" target="_blank" class="text-cyan-400 hover:underline text-[10px]">${g.url}</a>
-                    </td>
+                    <td class="p-4"><div class="font-bold text-white">${g.name}</div><a href="${g.url}" target="_blank" class="text-cyan-400 text-[10px]">${g.url}</a></td>
                     <td class="p-4 text-slate-300">${g.operators.join(', ')}</td>
                     <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-200">${g.status}</span></td>
                     <td class="p-4 text-slate-300">${g.reg}</td>
                     <td class="p-4 text-right space-x-2">
-                        <button onclick="openEditGatewayModal(${g.id})" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteGateway(${g.id})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="openEditGatewayModal(${g.id})" class="bg-slate-800 text-cyan-400 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteGateway(${g.id})" class="bg-rose-500/10 text-rose-400 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
 
-            // Kniha návštěv v adminu
-            const gbList = document.getElementById('admGuestbookList');
-            gbList.innerHTML = guestbook.length ? guestbook.map(g => `
+            document.getElementById('admGuestbookList').innerHTML = guestbook.length ? guestbook.map(g => `
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex items-center justify-between gap-4">
                     <div>
                         <div class="flex items-center gap-2 mb-1">
                             <span class="font-bold text-white text-xs">${g.author}</span>
                             <span class="text-[10px] text-slate-500">${g.date}</span>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${g.approved ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${g.approved ? 'Schváleno' : 'Čeká na schválení'}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${g.approved ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${g.approved ? 'Schváleno' : 'Čeká'}</span>
                         </div>
                         <p class="text-xs text-slate-300">${g.message}</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         ${!g.approved ? `<button onclick="approveGuestbook(${g.id})" class="bg-emerald-500 text-slate-950 px-3 py-1.5 rounded-lg font-bold text-xs">Schválit</button>` : ''}
-                        <button onclick="deleteGuestbook(${g.id})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="deleteGuestbook(${g.id})" class="bg-rose-500/10 text-rose-400 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
-            `).join('') : '<p class="text-slate-400 text-xs text-center py-6">Žádné příspěvky v knize návštěv.</p>';
+            `).join('') : '<p class="text-slate-400 text-xs text-center py-6">Žádné vzkazy.</p>';
 
-            // Formulář reklam
             document.getElementById('editTopAdText').value = ads.topText;
             document.getElementById('editTopAdLink').value = ads.topLink;
             document.getElementById('editMidAdTitle').value = ads.midTitle;
             document.getElementById('editMidAdText').value = ads.midText;
             document.getElementById('editMidAdLink').value = ads.midLink;
 
-            // Tabulka odkazů
-            const tbodyLinks = document.getElementById('admLinksTableBody');
-            tbodyLinks.innerHTML = links.map(l => `
+            document.getElementById('admLinksTableBody').innerHTML = links.map(l => `
                 <tr class="border-b border-slate-800 hover:bg-slate-950/50">
                     <td class="p-4 font-bold text-white">${l.name}</td>
                     <td class="p-4 text-cyan-400"><a href="${l.url}" target="_blank">${l.url}</a></td>
                     <td class="p-4 text-slate-300">${l.category}</td>
                     <td class="p-4 text-right space-x-2">
-                        <button onclick="openEditLinkModal(${l.id})" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteLink(${l.id})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="openEditLinkModal(${l.id})" class="bg-slate-800 text-cyan-400 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteLink(${l.id})" class="bg-rose-500/10 text-rose-400 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        // Správa SMS bran v adminu (CRUD)
-        function openAddGatewayModal() {
-            document.getElementById('gwModalTitle').innerText = "Přidat nový SMS portál";
-            document.getElementById('gatewayForm').reset();
-            document.getElementById('gwEditId').value = "";
-            document.getElementById('gatewayModal').classList.remove('hidden');
-        }
-
+        function openAddGatewayModal() { document.getElementById('gwModalTitle').innerText = "Přidat nový SMS portál"; document.getElementById('gatewayForm').reset(); document.getElementById('gwEditId').value = ""; document.getElementById('gatewayModal').classList.remove('hidden'); }
         function openEditGatewayModal(id) {
             const gw = gateways.find(g => g.id === id);
             if(!gw) return;
@@ -995,11 +858,7 @@
             document.getElementById('gwRegInfo').value = gw.reg;
             document.getElementById('gatewayModal').classList.remove('hidden');
         }
-
-        function closeGatewayModal() {
-            document.getElementById('gatewayModal').classList.add('hidden');
-        }
-
+        function closeGatewayModal() { document.getElementById('gatewayModal').classList.add('hidden'); }
         function saveGatewayForm(e) {
             e.preventDefault();
             const id = document.getElementById('gwEditId').value;
@@ -1012,77 +871,42 @@
             const reg = document.getElementById('gwRegInfo').value;
 
             if(id) {
-                // Edit
                 const idx = gateways.findIndex(g => g.id == id);
-                if(idx !== -1) {
-                    gateways[idx] = { ...gateways[idx], name, url, desc, operators, maxChars, status, reg, date: new Date().toLocaleDateString('cs-CZ') };
-                }
+                if(idx !== -1) gateways[idx] = { ...gateways[idx], name, url, desc, operators, maxChars, status, reg, date: new Date().toLocaleDateString('cs-CZ') };
             } else {
-                // Add
-                const newGw = {
-                    id: Date.now(),
-                    name, url, desc, operators, maxChars, status, reg, date: new Date().toLocaleDateString('cs-CZ')
-                };
-                gateways.push(newGw);
+                gateways.push({ id: Date.now(), name, url, desc, operators, maxChars, status, reg, date: new Date().toLocaleDateString('cs-CZ') });
             }
-
             localStorage.setItem('sms_gateways', JSON.stringify(gateways));
-            closeGatewayModal();
-            renderGateways();
-            renderAdminDashboardData();
-            alert('SMS brána byla úspěšně uložena.');
+            closeGatewayModal(); renderGateways(); renderAdminDashboardData();
         }
-
         function deleteGateway(id) {
-            if(confirm('Opravdu chcete tuto SMS bránu smazat?')) {
+            if(confirm('Opravdu smazat?')) {
                 gateways = gateways.filter(g => g.id !== id);
                 localStorage.setItem('sms_gateways', JSON.stringify(gateways));
-                renderGateways();
-                renderAdminDashboardData();
+                renderGateways(); renderAdminDashboardData();
             }
         }
-
-        // Správa knihy návštěv v adminu
         function approveGuestbook(id) {
             const entry = guestbook.find(g => g.id === id);
-            if(entry) {
-                entry.approved = true;
-                localStorage.setItem('sms_guestbook', JSON.stringify(guestbook));
-                renderGuestbook();
-                renderAdminDashboardData();
-            }
+            if(entry) { entry.approved = true; localStorage.setItem('sms_guestbook', JSON.stringify(guestbook)); renderGuestbook(); renderAdminDashboardData(); }
         }
-
         function deleteGuestbook(id) {
-            if(confirm('Opravdu smazat tento vzkaz?')) {
+            if(confirm('Opravdu smazat?')) {
                 guestbook = guestbook.filter(g => g.id !== id);
                 localStorage.setItem('sms_guestbook', JSON.stringify(guestbook));
-                renderGuestbook();
-                renderAdminDashboardData();
+                renderGuestbook(); renderAdminDashboardData();
             }
         }
-
-        // Nastavení reklam
         function saveAdsSettings() {
             ads.topText = document.getElementById('editTopAdText').value;
             ads.topLink = document.getElementById('editTopAdLink').value;
             ads.midTitle = document.getElementById('editMidAdTitle').value;
             ads.midText = document.getElementById('editMidAdText').value;
             ads.midLink = document.getElementById('editMidAdLink').value;
-
             localStorage.setItem('sms_ads', JSON.stringify(ads));
-            renderAds();
-            alert('Nastavení reklam bylo úspěšně uloženo.');
+            renderAds(); alert('Uloženo.');
         }
-
-        // Správa odkazů (CRUD)
-        function openAddLinkModal() {
-            document.getElementById('linkModalTitle').innerText = "Přidat užitečný odkaz";
-            document.getElementById('linkForm').reset();
-            document.getElementById('linkEditId').value = "";
-            document.getElementById('linkModal').classList.remove('hidden');
-        }
-
+        function openAddLinkModal() { document.getElementById('linkModalTitle').innerText = "Přidat odkaz"; document.getElementById('linkForm').reset(); document.getElementById('linkEditId').value = ""; document.getElementById('linkModal').classList.remove('hidden'); }
         function openEditLinkModal(id) {
             const l = links.find(item => item.id === id);
             if(!l) return;
@@ -1094,39 +918,28 @@
             document.getElementById('linkCategory').value = l.category;
             document.getElementById('linkModal').classList.remove('hidden');
         }
-
-        function closeLinkModal() {
-            document.getElementById('linkModal').classList.add('hidden');
-        }
-
+        function closeLinkModal() { document.getElementById('linkModal').classList.add('hidden'); }
         function saveLinkForm(e) {
             e.preventDefault();
             const id = document.getElementById('linkEditId').value;
             const name = document.getElementById('linkName').value;
-            const url = document.getElementById('linkUrl'].value;
+            const url = document.getElementById('linkUrl').value;
             const desc = document.getElementById('linkDesc').value;
             const category = document.getElementById('linkCategory').value;
-
             if(id) {
                 const idx = links.findIndex(l => l.id == id);
                 if(idx !== -1) links[idx] = { ...links[idx], name, url, desc, category };
             } else {
                 links.push({ id: Date.now(), name, url, desc, category });
             }
-
             localStorage.setItem('sms_links', JSON.stringify(links));
-            closeLinkModal();
-            renderLinks();
-            renderAdminDashboardData();
-            alert('Odkaz byl úspěšně uložen.');
+            closeLinkModal(); renderLinks(); renderAdminDashboardData();
         }
-
         function deleteLink(id) {
-            if(confirm('Opravdu chcete tento odkaz smazat?')) {
+            if(confirm('Opravdu smazat?')) {
                 links = links.filter(l => l.id !== id);
                 localStorage.setItem('sms_links', JSON.stringify(links));
-                renderLinks();
-                renderAdminDashboardData();
+                renderLinks(); renderAdminDashboardData();
             }
         }
     </script>
