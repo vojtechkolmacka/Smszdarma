@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <!-- TAB: ODKAZY (S PŘIDÁNÍM OBRÁZKU/BANNERU) -->
+        <!-- TAB: ODKAZY -->
         <div id="tab-links" class="tab-content hidden space-y-4">
             <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa užitečných odkazů</h3><button onclick="openLinkModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat odkaz</button></div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
@@ -73,7 +73,7 @@
         <!-- TAB: KNIHA NÁVŠTĚV -->
         <div id="tab-guestbook" class="tab-content hidden space-y-4"><div id="admGuestbookList" class="space-y-3"></div></div>
 
-        <!-- TAB: REKLAMY (S PODPOROU HTML KÓDU NEBO OBRÁZKU) -->
+        <!-- TAB: REKLAMY -->
         <div id="tab-ads" class="tab-content hidden space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
                 <h3 class="font-bold text-white">Nastavení reklamního banneru</h3>
@@ -86,10 +86,14 @@
                     <input type="text" id="editTopLink" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Cílový odkaz URL">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Vlastní HTML kód banneru nebo tag &lt;img&gt; (přepíše text výše)</label>
-                    <textarea id="editTopHtml" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder='např. <img src="banner.jpg" class="w-full rounded-xl"> nebo reklamní kód'></textarea>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo nahrát obrázkový banner přímo z mobilu</label>
+                    <input type="file" id="editTopFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
                 </div>
-                <button onclick="saveAds()" class="bg-cyan-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Uložit reklamu</button>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo vložte vlastní HTML kód banneru</label>
+                    <textarea id="editTopHtml" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder='např. reklamní kód'></textarea>
+                </div>
+                <button onclick="saveAdsWithFile()" class="bg-cyan-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Uložit reklamu</button>
             </div>
         </div>
     </div>
@@ -107,17 +111,17 @@
         </div>
     </div>
 
-    <!-- MODAL ODKAZ (S TLAČÍTKEM / POLEM PRO OBRÁZKOVÝ BANNER) -->
+    <!-- MODAL ODKAZ (S TLAČÍTKEM NA NAHRÁNÍ OBRÁZKU Z MOBILU) -->
     <div id="linkModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
             <h3 class="font-bold text-white">Přidat užitečný odkaz / banner</h3>
-            <form onsubmit="saveLink(event)" class="space-y-3 text-xs">
+            <form onsubmit="saveLinkWithFile(event)" class="space-y-3 text-xs">
                 <input type="text" id="linkName" required placeholder="Název odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="url" id="linkUrl" required placeholder="URL adresa odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="text" id="linkCategory" required placeholder="Kategorie" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white" value="Užitečné">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">URL obrázku / banneru (volitelné)</label>
-                    <input type="text" id="linkBannerUrl" placeholder="např. odkaz-na-obrazek.png nebo nahraný soubor" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nahrát obrázek / banner z mobilu</label>
+                    <input type="file" id="linkFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
                 </div>
                 <input type="text" id="linkDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <div class="flex justify-end gap-2"><button type="button" onclick="closeLinkModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
@@ -226,19 +230,34 @@
 
         function openLinkModal() { document.getElementById('linkModal').classList.remove('hidden'); }
         function closeLinkModal() { document.getElementById('linkModal').classList.add('hidden'); }
-        function saveLink(e) {
+
+        function saveLinkWithFile(e) {
             e.preventDefault();
+            const fileInput = document.getElementById('linkFile');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    finishSaveLink(uploadEvent.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                finishSaveLink("");
+            }
+        }
+
+        function finishSaveLink(bannerDataUrl) {
             links.push({
                 id: Date.now(),
                 name: document.getElementById('linkName').value,
                 url: document.getElementById('linkUrl').value,
                 category: document.getElementById('linkCategory').value,
                 desc: document.getElementById('linkDesc').value,
-                bannerUrl: document.getElementById('linkBannerUrl').value
+                bannerUrl: bannerDataUrl
             });
             localStorage.setItem('sms_links', JSON.stringify(links));
             closeLinkModal(); renderAdminData();
         }
+
         function deleteLink(id) {
             links = links.filter(l => l.id !== id);
             localStorage.setItem('sms_links', JSON.stringify(links));
@@ -255,10 +274,24 @@
             renderAdminData();
         }
 
-        function saveAds() {
+        function saveAdsWithFile() {
+            const fileInput = document.getElementById('editTopFile');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    const imgTag = `<img src="${uploadEvent.target.result}" class="w-full rounded-xl object-cover max-h-24">`;
+                    finishSaveAds(imgTag);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                finishSaveAds(document.getElementById('editTopHtml').value);
+            }
+        }
+
+        function finishSaveAds(htmlContent) {
             ads.topText = document.getElementById('editTopText').value;
             ads.topLink = document.getElementById('editTopLink').value;
-            ads.topHtml = document.getElementById('editTopHtml').value;
+            ads.topHtml = htmlContent;
             localStorage.setItem('sms_ads', JSON.stringify(ads));
             alert('Reklama uložena.');
         }
