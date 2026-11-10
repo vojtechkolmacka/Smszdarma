@@ -101,8 +101,9 @@
     <!-- MODAL BRÁNA -->
     <div id="gwModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <h3 class="font-bold text-white">Přidat nový SMS portál</h3>
+            <h3 id="gwModalTitle" class="font-bold text-white">Přidat/Upravit SMS portál</h3>
             <form onsubmit="saveGateway(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="gwId">
                 <input type="text" id="gwName" required placeholder="Název brány" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="url" id="gwUrl" required placeholder="URL adresa" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <textarea id="gwDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea>
@@ -111,16 +112,17 @@
         </div>
     </div>
 
-    <!-- MODAL ODKAZ (S TLAČÍTKEM NA NAHRÁNÍ OBRÁZKU Z MOBILU) -->
+    <!-- MODAL ODKAZ (S PODPOROU EDITACE A NAHRÁNÍ OBRÁZKU) -->
     <div id="linkModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <h3 class="font-bold text-white">Přidat užitečný odkaz / banner</h3>
+            <h3 id="linkModalTitle" class="font-bold text-white">Přidat/Upravit užitečný odkaz</h3>
             <form onsubmit="saveLinkWithFile(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="linkId">
                 <input type="text" id="linkName" required placeholder="Název odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="url" id="linkUrl" required placeholder="URL adresa odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="text" id="linkCategory" required placeholder="Kategorie" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white" value="Užitečné">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nahrát obrázek / banner z mobilu</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nahrát nový obrázek / banner z mobilu</label>
                     <input type="file" id="linkFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
                 </div>
                 <input type="text" id="linkDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
@@ -178,7 +180,14 @@
 
         function renderAdminData() {
             document.getElementById('admGatewaysTable').innerHTML = gateways.map(g => `
-                <tr class="border-b border-slate-800"><td class="p-4 font-bold text-white">${g.name}</td><td class="p-4 text-cyan-400">${g.url}</td><td class="p-4 text-right"><button onclick="deleteGateway(${g.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button></td></tr>
+                <tr class="border-b border-slate-800">
+                    <td class="p-4 font-bold text-white">${g.name}</td>
+                    <td class="p-4 text-cyan-400">${g.url}</td>
+                    <td class="p-4 text-right space-x-3">
+                        <button onclick="editGateway(${g.id})" class="text-cyan-400 font-semibold hover:underline">Upravit</button>
+                        <button onclick="deleteGateway(${g.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button>
+                    </td>
+                </tr>
             `).join('') || `<tr><td colspan="3" class="p-4 text-center text-slate-500">Žádné brány</td></tr>`;
 
             document.getElementById('admLinksTable').innerHTML = links.map(l => `
@@ -186,7 +195,10 @@
                     <td class="p-4">${l.bannerUrl ? `<img src="${l.bannerUrl}" class="w-10 h-10 object-cover rounded">` : '<span class="text-slate-600">Bez</span>'}</td>
                     <td class="p-4 font-bold text-white">${l.name}</td>
                     <td class="p-4 text-cyan-400">${l.url}</td>
-                    <td class="p-4 text-right"><button onclick="deleteLink(${l.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button></td>
+                    <td class="p-4 text-right space-x-3">
+                        <button onclick="editLink(${l.id})" class="text-cyan-400 font-semibold hover:underline">Upravit</button>
+                        <button onclick="deleteLink(${l.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button>
+                    </td>
                 </tr>
             `).join('') || `<tr><td colspan="4" class="p-4 text-center text-slate-500">Žádné odkazy</td></tr>`;
 
@@ -205,63 +217,134 @@
             document.getElementById('editTopHtml').value = ads.topHtml || '';
         }
 
-        function openGatewayModal() { document.getElementById('gwModal').classList.remove('hidden'); }
+        // SMS Brány - CRUD
+        function openGatewayModal() {
+            document.getElementById('gwId').value = "";
+            document.getElementById('gwName').value = "";
+            document.getElementById('gwUrl').value = "";
+            document.getElementById('gwDesc').value = "";
+            document.getElementById('gwModal').classList.remove('hidden');
+        }
         function closeGatewayModal() { document.getElementById('gwModal').classList.add('hidden'); }
+        
+        function editGateway(id) {
+            const gw = gateways.find(g => g.id === id);
+            if(!gw) return;
+            document.getElementById('gwId').value = gw.id;
+            document.getElementById('gwName').value = gw.name;
+            document.getElementById('gwUrl').value = gw.url;
+            document.getElementById('gwDesc').value = gw.desc;
+            document.getElementById('gwModal').classList.remove('hidden');
+        }
+
         function saveGateway(e) {
             e.preventDefault();
-            gateways.push({
-                id: Date.now(),
-                name: document.getElementById('gwName').value,
-                url: document.getElementById('gwUrl').value,
-                desc: document.getElementById('gwDesc').value,
-                operators: ["O2", "T-Mobile", "Vodafone"],
-                maxChars: "160 znaků",
-                reg: "Bez registrace",
-                status: "Funkční – ověřeno"
-            });
+            const id = document.getElementById('gwId').value;
+            const name = document.getElementById('gwName').value;
+            const url = document.getElementById('gwUrl').value;
+            const desc = document.getElementById('gwDesc').value;
+
+            if(id) {
+                const index = gateways.findIndex(g => g.id == id);
+                if(index !== -1) {
+                    gateways[index].name = name;
+                    gateways[index].url = url;
+                    gateways[index].desc = desc;
+                }
+            } else {
+                gateways.push({
+                    id: Date.now(),
+                    name, url, desc,
+                    operators: ["O2", "T-Mobile", "Vodafone"],
+                    maxChars: "160 znaků",
+                    reg: "Bez registrace",
+                    status: "Funkční – ověřeno"
+                });
+            }
             localStorage.setItem('sms_gateways', JSON.stringify(gateways));
             closeGatewayModal(); renderAdminData();
         }
         function deleteGateway(id) {
-            gateways = gateways.filter(g => g.id !== id);
-            localStorage.setItem('sms_gateways', JSON.stringify(gateways));
-            renderAdminData();
-        }
-
-        function openLinkModal() { document.getElementById('linkModal').classList.remove('hidden'); }
-        function closeLinkModal() { document.getElementById('linkModal').classList.add('hidden'); }
-
-        function saveLinkWithFile(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('linkFile');
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    finishSaveLink(uploadEvent.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                finishSaveLink("");
+            if(confirm('Opravdu smazat bránu?')) {
+                gateways = gateways.filter(g => g.id !== id);
+                localStorage.setItem('sms_gateways', JSON.stringify(gateways));
+                renderAdminData();
             }
         }
 
-        function finishSaveLink(bannerDataUrl) {
-            links.push({
-                id: Date.now(),
-                name: document.getElementById('linkName').value,
-                url: document.getElementById('linkUrl').value,
-                category: document.getElementById('linkCategory').value,
-                desc: document.getElementById('linkDesc').value,
-                bannerUrl: bannerDataUrl
-            });
+        // Užitečné odkazy - CRUD
+        function openLinkModal() {
+            document.getElementById('linkId').value = "";
+            document.getElementById('linkName').value = "";
+            document.getElementById('linkUrl').value = "";
+            document.getElementById('linkCategory').value = "Užitečné";
+            document.getElementById('linkDesc').value = "";
+            document.getElementById('linkFile').value = "";
+            document.getElementById('linkModal').classList.remove('hidden');
+        }
+        function closeLinkModal() { document.getElementById('linkModal').classList.add('hidden'); }
+
+        function editLink(id) {
+            const l = links.find(item => item.id === id);
+            if(!l) return;
+            document.getElementById('linkId').value = l.id;
+            document.getElementById('linkName').value = l.name;
+            document.getElementById('linkUrl').value = l.url;
+            document.getElementById('linkCategory').value = l.category;
+            document.getElementById('linkDesc').value = l.desc;
+            document.getElementById('linkFile').value = "";
+            document.getElementById('linkModal').classList.remove('hidden');
+        }
+
+        function saveLinkWithFile(e) {
+            e.preventDefault();
+            const id = document.getElementById('linkId').value;
+            const fileInput = document.getElementById('linkFile');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    finishSaveLink(id, uploadEvent.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                const existing = id ? links.find(l => l.id == id) : null;
+                finishSaveLink(id, existing ? existing.bannerUrl : "");
+            }
+        }
+
+        function finishSaveLink(id, bannerDataUrl) {
+            const name = document.getElementById('linkName').value;
+            const url = document.getElementById('linkUrl').value;
+            const category = document.getElementById('linkCategory').value;
+            const desc = document.getElementById('linkDesc').value;
+
+            if(id) {
+                const index = links.findIndex(l => l.id == id);
+                if(index !== -1) {
+                    links[index].name = name;
+                    links[index].url = url;
+                    links[index].category = category;
+                    links[index].desc = desc;
+                    if(bannerDataUrl) links[index].bannerUrl = bannerDataUrl;
+                }
+            } else {
+                links.push({
+                    id: Date.now(),
+                    name, url, category, desc,
+                    bannerUrl: bannerDataUrl
+                });
+            }
             localStorage.setItem('sms_links', JSON.stringify(links));
             closeLinkModal(); renderAdminData();
         }
 
         function deleteLink(id) {
-            links = links.filter(l => l.id !== id);
-            localStorage.setItem('sms_links', JSON.stringify(links));
-            renderAdminData();
+            if(confirm('Opravdu smazat odkaz?')) {
+                links = links.filter(l => l.id !== id);
+                localStorage.setItem('sms_links', JSON.stringify(links));
+                renderAdminData();
+            }
         }
 
         function approveGb(id) {
