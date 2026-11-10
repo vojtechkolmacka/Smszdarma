@@ -35,7 +35,7 @@
             <button onclick="adminLogout()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-xl text-xs font-semibold">Odhlásit</button>
         </div>
 
-        <!-- TLAČÍTKO PRO VYNULOVÁNÍ NÁVŠTĚV -->
+        <!-- VYNULOVÁNÍ NÁVŠTĚV -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
                 <h3 class="font-bold text-white">Počítadlo návštěvnosti</h3>
@@ -46,8 +46,8 @@
             </button>
         </div>
 
-        <!-- ZÁLOŽKY V ADMINU -->
-        <div class="flex gap-2 border-b border-slate-800 pb-4">
+        <!-- ZÁLOŽKY -->
+        <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-4">
             <button onclick="switchTab('gateways')" id="tabBtn-gateways" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">SMS Brány</button>
             <button onclick="switchTab('links')" id="tabBtn-links" class="bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Užitečné odkazy</button>
             <button onclick="switchTab('guestbook')" id="tabBtn-guestbook" class="bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Kniha návštěv</button>
@@ -56,47 +56,39 @@
 
         <!-- TAB: BRÁNY -->
         <div id="tab-gateways" class="tab-content space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-white">Správa SMS bran</h3>
-                <button onclick="openGatewayModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat bránu</button>
-            </div>
+            <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa SMS bran</h3><button onclick="openGatewayModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat bránu</button></div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800">
-                        <tr><th class="p-4">Název</th><th class="p-4">URL</th><th class="p-4 text-right">Akce</th></tr>
-                    </thead>
-                    <tbody id="admGatewaysTable" class="divide-y divide-slate-800"></tbody>
-                </table>
+                <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Název</th><th class="p-4">URL</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admGatewaysTable" class="divide-y divide-slate-800"></tbody></table>
             </div>
         </div>
 
-        <!-- TAB: ODKAZY -->
+        <!-- TAB: ODKAZY (S PŘIDÁNÍM OBRÁZKU/BANNERU) -->
         <div id="tab-links" class="tab-content hidden space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-white">Správa užitečných odkazů</h3>
-                <button onclick="openLinkModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat odkaz</button>
-            </div>
+            <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa užitečných odkazů</h3><button onclick="openLinkModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat odkaz</button></div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800">
-                        <tr><th class="p-4">Název</th><th class="p-4">URL</th><th class="p-4 text-right">Akce</th></tr>
-                    </thead>
-                    <tbody id="admLinksTable" class="divide-y divide-slate-800"></tbody>
-                </table>
+                <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Obrázek</th><th class="p-4">Název</th><th class="p-4">URL</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admLinksTable" class="divide-y divide-slate-800"></tbody></table>
             </div>
         </div>
 
         <!-- TAB: KNIHA NÁVŠTĚV -->
-        <div id="tab-guestbook" class="tab-content hidden space-y-4">
-            <div id="admGuestbookList" class="space-y-3"></div>
-        </div>
+        <div id="tab-guestbook" class="tab-content hidden space-y-4"><div id="admGuestbookList" class="space-y-3"></div></div>
 
-        <!-- TAB: REKLAMY -->
+        <!-- TAB: REKLAMY (S PODPOROU HTML KÓDU NEBO OBRÁZKU) -->
         <div id="tab-ads" class="tab-content hidden space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
                 <h3 class="font-bold text-white">Nastavení reklamního banneru</h3>
-                <input type="text" id="editTopText" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Text reklamy">
-                <input type="text" id="editTopLink" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Cílový odkaz URL">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Standardní text reklamy</label>
+                    <input type="text" id="editTopText" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Text reklamy">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Odkaz reklamy</label>
+                    <input type="text" id="editTopLink" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Cílový odkaz URL">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Vlastní HTML kód banneru nebo tag &lt;img&gt; (přepíše text výše)</label>
+                    <textarea id="editTopHtml" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder='např. <img src="banner.jpg" class="w-full rounded-xl"> nebo reklamní kód'></textarea>
+                </div>
                 <button onclick="saveAds()" class="bg-cyan-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Uložit reklamu</button>
             </div>
         </div>
@@ -110,27 +102,25 @@
                 <input type="text" id="gwName" required placeholder="Název brány" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="url" id="gwUrl" required placeholder="URL adresa" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <textarea id="gwDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea>
-                <div class="flex justify-end gap-2">
-                    <button type="button" onclick="closeGatewayModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button>
-                    <button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button>
-                </div>
+                <div class="flex justify-end gap-2"><button type="button" onclick="closeGatewayModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL ODKAZ -->
+    <!-- MODAL ODKAZ (S TLAČÍTKEM / POLEM PRO OBRÁZKOVÝ BANNER) -->
     <div id="linkModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <h3 class="font-bold text-white">Přidat užitečný odkaz</h3>
+            <h3 class="font-bold text-white">Přidat užitečný odkaz / banner</h3>
             <form onsubmit="saveLink(event)" class="space-y-3 text-xs">
                 <input type="text" id="linkName" required placeholder="Název odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                <input type="url" id="linkUrl" required placeholder="URL adresa" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                <input type="url" id="linkUrl" required placeholder="URL adresa odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="text" id="linkCategory" required placeholder="Kategorie" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white" value="Užitečné">
-                <input type="text" id="linkDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                <div class="flex justify-end gap-2">
-                    <button type="button" onclick="closeLinkModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button>
-                    <button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">URL obrázku / banneru (volitelné)</label>
+                    <input type="text" id="linkBannerUrl" placeholder="např. odkaz-na-obrazek.png nebo nahraný soubor" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
+                <input type="text" id="linkDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                <div class="flex justify-end gap-2"><button type="button" onclick="closeLinkModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
             </form>
         </div>
     </div>
@@ -139,7 +129,7 @@
         let gateways = JSON.parse(localStorage.getItem('sms_gateways')) || [];
         let links = JSON.parse(localStorage.getItem('sms_links')) || [];
         let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
-        let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "", topLink: "#" };
+        let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "", topLink: "#", topHtml: "" };
         let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -150,7 +140,6 @@
 
         function handleAdminLogin(e) {
             e.preventDefault();
-            // Nastavené heslo: Mauretania2*
             if(document.getElementById('adminPasswordInput').value === 'Mauretania2*') {
                 sessionStorage.setItem('sms_admin_logged', 'true');
                 showDashboard();
@@ -185,20 +174,17 @@
 
         function renderAdminData() {
             document.getElementById('admGatewaysTable').innerHTML = gateways.map(g => `
-                <tr class="border-b border-slate-800">
-                    <td class="p-4 font-bold text-white">${g.name}</td>
-                    <td class="p-4 text-cyan-400">${g.url}</td>
-                    <td class="p-4 text-right"><button onclick="deleteGateway(${g.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button></td>
-                </tr>
+                <tr class="border-b border-slate-800"><td class="p-4 font-bold text-white">${g.name}</td><td class="p-4 text-cyan-400">${g.url}</td><td class="p-4 text-right"><button onclick="deleteGateway(${g.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button></td></tr>
             `).join('') || `<tr><td colspan="3" class="p-4 text-center text-slate-500">Žádné brány</td></tr>`;
 
             document.getElementById('admLinksTable').innerHTML = links.map(l => `
                 <tr class="border-b border-slate-800">
+                    <td class="p-4">${l.bannerUrl ? `<img src="${l.bannerUrl}" class="w-10 h-10 object-cover rounded">` : '<span class="text-slate-600">Bez</span>'}</td>
                     <td class="p-4 font-bold text-white">${l.name}</td>
                     <td class="p-4 text-cyan-400">${l.url}</td>
                     <td class="p-4 text-right"><button onclick="deleteLink(${l.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button></td>
                 </tr>
-            `).join('') || `<tr><td colspan="3" class="p-4 text-center text-slate-500">Žádné odkazy</td></tr>`;
+            `).join('') || `<tr><td colspan="4" class="p-4 text-center text-slate-500">Žádné odkazy</td></tr>`;
 
             document.getElementById('admGuestbookList').innerHTML = guestbook.map(g => `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
@@ -208,10 +194,11 @@
                         <button onclick="deleteGb(${g.id})" class="text-rose-400 font-semibold">Smazat</button>
                     </div>
                 </div>
-            `).join('') || `<p class="text-slate-500 text-center py-4">Žádné vzkazy v knize návštěv.</p>`;
+            `).join('') || `<p class="text-slate-500 text-center py-4">Žádné vzkazy.</p>`;
 
             document.getElementById('editTopText').value = ads.topText;
             document.getElementById('editTopLink').value = ads.topLink;
+            document.getElementById('editTopHtml').value = ads.topHtml || '';
         }
 
         function openGatewayModal() { document.getElementById('gwModal').classList.remove('hidden'); }
@@ -246,7 +233,8 @@
                 name: document.getElementById('linkName').value,
                 url: document.getElementById('linkUrl').value,
                 category: document.getElementById('linkCategory').value,
-                desc: document.getElementById('linkDesc').value
+                desc: document.getElementById('linkDesc').value,
+                bannerUrl: document.getElementById('linkBannerUrl').value
             });
             localStorage.setItem('sms_links', JSON.stringify(links));
             closeLinkModal(); renderAdminData();
@@ -270,6 +258,7 @@
         function saveAds() {
             ads.topText = document.getElementById('editTopText').value;
             ads.topLink = document.getElementById('editTopLink').value;
+            ads.topHtml = document.getElementById('editTopHtml').value;
             localStorage.setItem('sms_ads', JSON.stringify(ads));
             alert('Reklama uložena.');
         }
