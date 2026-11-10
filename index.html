@@ -233,7 +233,7 @@
             grid.innerHTML = links.map(l => `
                 <div class="glass-card border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
                     <div>
-                        ${l.bannerUrl ? `<img src="${l.bannerUrl}" alt="${l.name}" class="w-full h-24 object-cover rounded-xl mb-3 border border-slate-800">` : ''}
+                        ${l.bannerUrl ? `<img src="${l.bannerUrl}" alt="${l.name}" class="w-full h-32 object-cover rounded-xl mb-3 border border-slate-800">` : ''}
                         <span class="text-[10px] font-bold text-cyan-400 uppercase bg-cyan-500/10 px-2 py-0.5 rounded">${l.category}</span>
                         <h3 class="text-base font-bold text-white mt-2 mb-1">${l.name}</h3>
                         <p class="text-xs text-slate-300 mb-4">${l.desc}</p>
