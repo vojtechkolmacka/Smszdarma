@@ -58,7 +58,7 @@
         <div id="tab-gateways" class="tab-content space-y-4">
             <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa SMS bran</h3><button onclick="openGatewayModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat bránu</button></div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Název</th><th class="p-4">URL</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admGatewaysTable" class="divide-y divide-slate-800"></tbody></table>
+                <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Název</th><th class="p-4">Stav</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admGatewaysTable" class="divide-y divide-slate-800"></tbody></table>
             </div>
         </div>
 
@@ -98,21 +98,39 @@
         </div>
     </div>
 
-    <!-- MODAL BRÁNA -->
+    <!-- MODAL BRÁNA (S VÝBĚREM STAVU) -->
     <div id="gwModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
             <h3 id="gwModalTitle" class="font-bold text-white">Přidat/Upravit SMS portál</h3>
             <form onsubmit="saveGateway(event)" class="space-y-3 text-xs">
                 <input type="hidden" id="gwId">
-                <input type="text" id="gwName" required placeholder="Název brány" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                <input type="url" id="gwUrl" required placeholder="URL adresa" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                <textarea id="gwDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea>
-                <div class="flex justify-end gap-2"><button type="button" onclick="closeGatewayModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Název brány</label>
+                    <input type="text" id="gwName" required placeholder="např. PoslatSMS.cz" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">URL adresa</label>
+                    <input type="url" id="gwUrl" required placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Stav brány</label>
+                    <select id="gwStatus" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                        <option value="Funkční – ověřeno">🟢 Funkční – ověřeno (zelená)</option>
+                        <option value="Omezený provoz">🟠 Omezený provoz (oranžová)</option>
+                        <option value="Vyžaduje registraci">🟡 Vyžaduje registraci (žlutá)</option>
+                        <option value="Nefunkční">🔴 Nefunkční (červená)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Popis</label>
+                    <textarea id="gwDesc" required placeholder="Stručný popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2"><button type="button" onclick="closeGatewayModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL ODKAZ (S PODPOROU EDITACE A NAHRÁNÍ OBRÁZKU) -->
+    <!-- MODAL ODKAZ -->
     <div id="linkModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
             <h3 id="linkModalTitle" class="font-bold text-white">Přidat/Upravit užitečný odkaz</h3>
@@ -182,7 +200,7 @@
             document.getElementById('admGatewaysTable').innerHTML = gateways.map(g => `
                 <tr class="border-b border-slate-800">
                     <td class="p-4 font-bold text-white">${g.name}</td>
-                    <td class="p-4 text-cyan-400">${g.url}</td>
+                    <td class="p-4 text-slate-300">${g.status}</td>
                     <td class="p-4 text-right space-x-3">
                         <button onclick="editGateway(${g.id})" class="text-cyan-400 font-semibold hover:underline">Upravit</button>
                         <button onclick="deleteGateway(${g.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button>
@@ -222,6 +240,7 @@
             document.getElementById('gwId').value = "";
             document.getElementById('gwName').value = "";
             document.getElementById('gwUrl').value = "";
+            document.getElementById('gwStatus').value = "Funkční – ověřeno";
             document.getElementById('gwDesc').value = "";
             document.getElementById('gwModal').classList.remove('hidden');
         }
@@ -233,6 +252,7 @@
             document.getElementById('gwId').value = gw.id;
             document.getElementById('gwName').value = gw.name;
             document.getElementById('gwUrl').value = gw.url;
+            document.getElementById('gwStatus').value = gw.status || "Funkční – ověřeno";
             document.getElementById('gwDesc').value = gw.desc;
             document.getElementById('gwModal').classList.remove('hidden');
         }
@@ -242,6 +262,7 @@
             const id = document.getElementById('gwId').value;
             const name = document.getElementById('gwName').value;
             const url = document.getElementById('gwUrl').value;
+            const status = document.getElementById('gwStatus').value;
             const desc = document.getElementById('gwDesc').value;
 
             if(id) {
@@ -249,16 +270,16 @@
                 if(index !== -1) {
                     gateways[index].name = name;
                     gateways[index].url = url;
+                    gateways[index].status = status;
                     gateways[index].desc = desc;
                 }
             } else {
                 gateways.push({
                     id: Date.now(),
-                    name, url, desc,
+                    name, url, status, desc,
                     operators: ["O2", "T-Mobile", "Vodafone"],
                     maxChars: "160 znaků",
-                    reg: "Bez registrace",
-                    status: "Funkční – ověřeno"
+                    reg: "Bez registrace"
                 });
             }
             localStorage.setItem('sms_gateways', JSON.stringify(gateways));
