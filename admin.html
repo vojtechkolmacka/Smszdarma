@@ -18,7 +18,7 @@
                 <i class="fa-solid fa-lock"></i>
             </div>
             <h3 class="text-xl font-bold text-white">Administrace portálu</h3>
-            <p class="text-xs text-slate-400 mt-1">Zadejte heslo (výchozí: admin123)</p>
+            <p class="text-xs text-slate-400 mt-1">Zadejte administrátorské heslo</p>
         </div>
         <form onsubmit="handleAdminLogin(event)" class="space-y-4">
             <input type="password" id="adminPasswordInput" required placeholder="Heslo" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-cyan-500 text-center tracking-widest">
@@ -105,9 +105,8 @@
     <!-- MODAL BRÁNA -->
     <div id="gwModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <h3 class="font-bold text-white">Přidat/Upravit bránu</h3>
+            <h3 class="font-bold text-white">Přidat nový SMS portál</h3>
             <form onsubmit="saveGateway(event)" class="space-y-3 text-xs">
-                <input type="hidden" id="gwId">
                 <input type="text" id="gwName" required placeholder="Název brány" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="url" id="gwUrl" required placeholder="URL adresa" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <textarea id="gwDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea>
@@ -122,9 +121,8 @@
     <!-- MODAL ODKAZ -->
     <div id="linkModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <h3 class="font-bold text-white">Přidat/Upravit odkaz</h3>
+            <h3 class="font-bold text-white">Přidat užitečný odkaz</h3>
             <form onsubmit="saveLink(event)" class="space-y-3 text-xs">
-                <input type="hidden" id="linkId">
                 <input type="text" id="linkName" required placeholder="Název odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="url" id="linkUrl" required placeholder="URL adresa" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="text" id="linkCategory" required placeholder="Kategorie" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white" value="Užitečné">
@@ -152,7 +150,8 @@
 
         function handleAdminLogin(e) {
             e.preventDefault();
-            if(document.getElementById('adminPasswordInput').value === 'admin123') {
+            // Nastavené heslo: Mauretania2*
+            if(document.getElementById('adminPasswordInput').value === 'Mauretania2*') {
                 sessionStorage.setItem('sms_admin_logged', 'true');
                 showDashboard();
             } else {
@@ -189,27 +188,27 @@
                 <tr class="border-b border-slate-800">
                     <td class="p-4 font-bold text-white">${g.name}</td>
                     <td class="p-4 text-cyan-400">${g.url}</td>
-                    <td class="p-4 text-right"><button onclick="deleteGateway(${g.id})" class="text-rose-400">Smazat</button></td>
+                    <td class="p-4 text-right"><button onclick="deleteGateway(${g.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button></td>
                 </tr>
-            `).join('');
+            `).join('') || `<tr><td colspan="3" class="p-4 text-center text-slate-500">Žádné brány</td></tr>`;
 
             document.getElementById('admLinksTable').innerHTML = links.map(l => `
                 <tr class="border-b border-slate-800">
                     <td class="p-4 font-bold text-white">${l.name}</td>
                     <td class="p-4 text-cyan-400">${l.url}</td>
-                    <td class="p-4 text-right"><button onclick="deleteLink(${l.id})" class="text-rose-400">Smazat</button></td>
+                    <td class="p-4 text-right"><button onclick="deleteLink(${l.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button></td>
                 </tr>
-            `).join('');
+            `).join('') || `<tr><td colspan="3" class="p-4 text-center text-slate-500">Žádné odkazy</td></tr>`;
 
             document.getElementById('admGuestbookList').innerHTML = guestbook.map(g => `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
                     <div><span class="font-bold text-white">${g.author}</span>: ${g.message}</div>
                     <div class="space-x-2">
                         ${!g.approved ? `<button onclick="approveGb(${g.id})" class="bg-emerald-500 text-slate-950 px-3 py-1 rounded font-bold">Schválit</button>` : ''}
-                        <button onclick="deleteGb(${g.id})" class="text-rose-400">Smazat</button>
+                        <button onclick="deleteGb(${g.id})" class="text-rose-400 font-semibold">Smazat</button>
                     </div>
                 </div>
-            `).join('');
+            `).join('') || `<p class="text-slate-500 text-center py-4">Žádné vzkazy v knize návštěv.</p>`;
 
             document.getElementById('editTopText').value = ads.topText;
             document.getElementById('editTopLink').value = ads.topLink;
