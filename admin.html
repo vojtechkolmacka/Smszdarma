@@ -72,8 +72,19 @@
         <!-- TAB: ODKAZY -->
         <div id="tab-links" class="tab-content hidden space-y-4">
             <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa užitečných odkazů</h3><button onclick="openLinkModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat odkaz</button></div>
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-                <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Obrázek</th><th class="p-4">Název</th><th class="p-4">URL</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admLinksTable" class="divide-y divide-slate-800"></tbody></table>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800">
+                        <tr>
+                            <th class="p-4">Obrázek</th>
+                            <th class="p-4">Název / Kat.</th>
+                            <th class="p-4">Popis</th>
+                            <th class="p-4">URL</th>
+                            <th class="p-4 text-right">Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admLinksTable" class="divide-y divide-slate-800"></tbody>
+                </table>
             </div>
         </div>
 
@@ -151,12 +162,12 @@
             <h3 id="linkModalTitle" class="font-bold text-white">Přidat/Upravit užitečný odkaz</h3>
             <form onsubmit="saveLinkWithFile(event)" class="space-y-3 text-xs">
                 <input type="hidden" id="linkId">
-                <input type="text" id="linkName" required placeholder="Název odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                <input type="url" id="linkUrl" required placeholder="URL adresa odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                <input type="text" id="linkCategory" required placeholder="Kategorie" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white" value="Užitečné">
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Název odkazu</label><input type="text" id="linkName" required placeholder="Název odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">URL adresa</label><input type="url" id="linkUrl" required placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Kategorie</label><input type="text" id="linkCategory" required placeholder="Kategorie" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white" value="Užitečné"></div>
                 <div><label class="block text-xs font-semibold text-slate-300 mb-1">Nahrát obrázek / banner z mobilu</label><input type="file" id="linkFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400"></div>
-                <input type="text" id="linkDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                <div class="flex justify-end gap-2"><button type="button" onclick="closeLinkModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Popis</label><textarea id="linkDesc" required placeholder="Popis" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea></div>
+                <div class="flex justify-end gap-2 pt-2"><button type="button" onclick="closeLinkModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
             </form>
         </div>
     </div>
@@ -258,14 +269,15 @@
             document.getElementById('admLinksTable').innerHTML = links.map(l => `
                 <tr class="border-b border-slate-800">
                     <td class="p-4">${l.bannerUrl ? `<img src="${l.bannerUrl}" class="w-10 h-10 object-cover rounded">` : '<span class="text-slate-600">Bez</span>'}</td>
-                    <td class="p-4 font-bold text-white">${l.name}</td>
-                    <td class="p-4 text-cyan-400">${l.url}</td>
+                    <td class="p-4 font-bold text-white">${l.name}<br><span class="text-[10px] text-cyan-400 uppercase">${l.category || ''}</span></td>
+                    <td class="p-4 text-slate-300 max-w-xs truncate">${l.desc || 'Bez popisu'}</td>
+                    <td class="p-4 text-cyan-400 truncate max-w-[150px]"><a href="${l.url}" target="_blank" class="hover:underline">${l.url}</a></td>
                     <td class="p-4 text-right space-x-3">
                         <button onclick="editLink(${l.id})" class="text-cyan-400 font-semibold hover:underline">Upravit</button>
                         <button onclick="deleteLink(${l.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button>
                     </td>
                 </tr>
-            `).join('') || `<tr><td colspan="4" class="p-4 text-center text-slate-500">Žádné odkazy</td></tr>`;
+            `).join('') || `<tr><td colspan="5" class="p-4 text-center text-slate-500">Žádné odkazy</td></tr>`;
 
             document.getElementById('admBannersTable').innerHTML = banners.map(b => `
                 <tr class="border-b border-slate-800">
@@ -282,16 +294,6 @@
             document.getElementById('editTopText').value = ads.topText || '';
             document.getElementById('editTopLink').value = ads.topLink || '#';
             document.getElementById('editTopHtml').value = ads.topHtml || '';
-
-            document.getElementById('admGuestbookList').innerHTML = guestbook.map(g => `
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
-                    <div><span class="font-bold text-white">${g.author}</span>: <span class="text-slate-300">${g.message}</span></div>
-                    <div class="space-x-2 shrink-0">
-                        ${!g.approved ? `<button onclick="approveGb(${g.id})" class="bg-emerald-500 text-slate-950 px-3 py-1 rounded font-bold text-xs">Schválit</button>` : '<span class="text-xs text-emerald-400 mr-2">Schváleno</span>'}
-                        <button onclick="deleteGb(${g.id})" class="text-rose-400 font-semibold text-xs">Smazat</button>
-                    </div>
-                </div>
-            `).join('') || `<p class="text-slate-500 text-center py-4">Žádné vzkazy.</p>`;
         }
 
         // SMS Brány
@@ -320,15 +322,25 @@
 
         // Užitečné odkazy
         function openLinkModal() {
-            document.getElementById('linkId').value = ""; document.getElementById('linkName').value = ""; document.getElementById('linkUrl').value = "";
-            document.getElementById('linkCategory').value = "Užitečné"; document.getElementById('linkDesc').value = ""; document.getElementById('linkFile').value = "";
+            document.getElementById('linkId').value = ""; 
+            document.getElementById('linkName').value = ""; 
+            document.getElementById('linkUrl').value = "";
+            document.getElementById('linkCategory').value = "Užitečné"; 
+            document.getElementById('linkDesc').value = ""; 
+            document.getElementById('linkFile').value = "";
+            document.getElementById('linkModalTitle').innerText = "Přidat užitečný odkaz";
             document.getElementById('linkModal').classList.remove('hidden');
         }
         function closeLinkModal() { document.getElementById('linkModal').classList.add('hidden'); }
         function editLink(id) {
             const l = links.find(item => item.id === id); if(!l) return;
-            document.getElementById('linkId').value = l.id; document.getElementById('linkName').value = l.name; document.getElementById('linkUrl').value = l.url;
-            document.getElementById('linkCategory').value = l.category; document.getElementById('linkDesc').value = l.desc; document.getElementById('linkFile').value = "";
+            document.getElementById('linkId').value = l.id; 
+            document.getElementById('linkName').value = l.name; 
+            document.getElementById('linkUrl').value = l.url;
+            document.getElementById('linkCategory').value = l.category || "Užitečné"; 
+            document.getElementById('linkDesc').value = l.desc || ""; 
+            document.getElementById('linkFile').value = "";
+            document.getElementById('linkModalTitle').innerText = "Upravit užitečný odkaz";
             document.getElementById('linkModal').classList.remove('hidden');
         }
         function saveLinkWithFile(e) {
@@ -350,6 +362,7 @@
         function openBannerModal() {
             document.getElementById('bannerId').value = ""; document.getElementById('bannerTitle').value = ""; document.getElementById('bannerUrl').value = "";
             document.getElementById('bannerFile').value = ""; document.getElementById('bannerDesc').value = "";
+            document.getElementById('bannerModalTitle').innerText = "Přidat banner s odkazem";
             document.getElementById('bannerModal').classList.remove('hidden');
         }
         function closeBannerModal() { document.getElementById('bannerModal').classList.add('hidden'); }
@@ -357,6 +370,7 @@
             const b = banners.find(item => item.id === id); if(!b) return;
             document.getElementById('bannerId').value = b.id; document.getElementById('bannerTitle').value = b.title; document.getElementById('bannerUrl').value = b.url;
             document.getElementById('bannerDesc').value = b.desc || ""; document.getElementById('bannerFile').value = "";
+            document.getElementById('bannerModalTitle').innerText = "Upravit banner s odkazem";
             document.getElementById('bannerModal').classList.remove('hidden');
         }
         function saveBannerWithFile(e) {
@@ -395,12 +409,6 @@
             localStorage.setItem('sms_ads', JSON.stringify(ads));
             alert('Placená reklama byla úspěšně uložena!');
         }
-
-        function approveGb(id) {
-            const item = guestbook.find(g => g.id === id); if(item) { item.approved = true; localStorage.setItem('sms_guestbook', JSON.stringify(guestbook)); renderAdminData(); }
-        }
-        function deleteGb(id) {
-            guestbook = guestbook.filter(g => g.id !== id); localStorage.setItem('sms_guestbook', JSON.stringify(guestbook)); renderAdminData(); }
     </script>
 </body>
 </html>
