@@ -57,6 +57,7 @@
             <button onclick="switchTab('gateways')" id="tabBtn-gateways" class="adm-tab-btn bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">SMS Brány</button>
             <button onclick="switchTab('links')" id="tabBtn-links" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Užitečné odkazy</button>
             <button onclick="switchTab('banners')" id="tabBtn-banners" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Bannery s odkazy</button>
+            <button onclick="switchTab('ads')" id="tabBtn-ads" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Placená reklama</button>
             <button onclick="switchTab('guestbook')" id="tabBtn-guestbook" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Kniha návštěv</button>
         </div>
 
@@ -81,6 +82,30 @@
             <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa bannerů s odkazy</h3><button onclick="openBannerModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat banner</button></div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
                 <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Náhled</th><th class="p-4">Nadpis / Popis</th><th class="p-4">Cílový odkaz</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admBannersTable" class="divide-y divide-slate-800"></tbody></table>
+            </div>
+        </div>
+
+        <!-- TAB: PLACENÁ REKLAMA -->
+        <div id="tab-ads" class="tab-content hidden space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <h3 class="font-bold text-white text-sm">Nastavení panelu pro placenou reklamu (Horní banner)</h3>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Text reklamy</label>
+                    <input type="text" id="editTopText" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Text reklamy">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Cílový odkaz (URL)</label>
+                    <input type="text" id="editTopLink" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="https://...">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo nahrát obrázkový banner přímo z mobilu</label>
+                    <input type="file" id="editTopFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo vložte vlastní HTML kód banneru</label>
+                    <textarea id="editTopHtml" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder='např. &lt;img src="..."&gt;'></textarea>
+                </div>
+                <button onclick="saveAdsWithFile()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs">Uložit placenou reklamu</button>
             </div>
         </div>
 
@@ -166,6 +191,7 @@
             { id: 1, name: "Český telekomunikační úřad", url: "https://www.ctu.cz", desc: "Regulátor telekomunikačního trhu.", category: "Úřady", bannerUrl: "" }
         ];
         let banners = JSON.parse(localStorage.getItem('sms_banners')) || [];
+        let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "Reklamní prostor pro vaši nabídku", topLink: "#", topHtml: "" };
         let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
         let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
@@ -252,6 +278,10 @@
                     </td>
                 </tr>
             `).join('') || `<tr><td colspan="4" class="p-4 text-center text-slate-500">Žádné bannery</td></tr>`;
+
+            document.getElementById('editTopText').value = ads.topText || '';
+            document.getElementById('editTopLink').value = ads.topLink || '#';
+            document.getElementById('editTopHtml').value = ads.topHtml || '';
 
             document.getElementById('admGuestbookList').innerHTML = guestbook.map(g => `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
@@ -342,6 +372,28 @@
         }
         function deleteBanner(id) {
             if(confirm('Opravdu smazat banner?')) { banners = banners.filter(b => b.id !== id); localStorage.setItem('sms_banners', JSON.stringify(banners)); renderAdminData(); }
+        }
+
+        // Placená reklama
+        function saveAdsWithFile() {
+            const fileInput = document.getElementById('editTopFile');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    const imgTag = `<img src="${uploadEvent.target.result}" class="w-full rounded-xl object-cover max-h-24">`;
+                    finishSaveAds(imgTag);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                finishSaveAds(document.getElementById('editTopHtml').value);
+            }
+        }
+        function finishSaveAds(htmlContent) {
+            ads.topText = document.getElementById('editTopText').value;
+            ads.topLink = document.getElementById('editTopLink').value;
+            ads.topHtml = htmlContent;
+            localStorage.setItem('sms_ads', JSON.stringify(ads));
+            alert('Placená reklama byla úspěšně uložena!');
         }
 
         function approveGb(id) {
