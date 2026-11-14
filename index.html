@@ -56,7 +56,7 @@
                 <div class="hidden md:block w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"><img src="banner-pc.png" alt="SMS ZDARMA ONLINE" class="w-full h-auto rounded-2xl shadow-2xl border border-slate-800 object-cover"></div>
             </section>
 
-            <!-- HORNÍ REKLAMNÍ BANNER -->
+            <!-- HORNÍ PANEL PRO PLACENOU REKLAMU -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8" id="adContainerTop">
                 <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border border-amber-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-3 w-full">
@@ -69,6 +69,9 @@
                     <a id="topAdLink" href="#" target="_blank" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md shrink-0">Zjistit více <i class="fa-solid fa-arrow-right ml-1"></i></a>
                 </div>
             </div>
+
+            <!-- DYNAMICKÉ BANNERY S ODKAZY Z ADMINISTRACE -->
+            <div id="dynamicBannersSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
             <!-- VYHLEDÁVÁNÍ A BRÁNY -->
             <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -114,14 +117,15 @@
                 <div class="mt-12 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
                     <h3 class="text-lg font-bold flex items-center gap-2 mb-6 pb-4 border-b border-slate-800"><i class="fa-solid fa-chart-line text-cyan-400"></i> Statistiky návštěvnosti webu</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Dnes návštěv</span><span class="text-3xl font-extrabold text-cyan-400" id="statToday">Načítám...</span></div>
-                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Aktivní relace</span><span class="text-3xl font-extrabold text-white" id="statMonth">1</span></div>
-                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Celkový počet návštěv</span><span class="text-3xl font-extrabold text-sky-400" id="statTotal">Načítám...</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Dnes návštěv</span><span class="text-3xl font-extrabold text-cyan-400" id="statToday">0</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Posledních 30 dní</span><span class="text-3xl font-extrabold text-white" id="statMonth">0</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Celkový počet návštěv</span><span class="text-3xl font-extrabold text-sky-400" id="statTotal">0</span></div>
                     </div>
                 </div>
             </section>
         </div>
 
+        <!-- DALŠÍ ZÁLOŽKY WEBU -->
         <div id="view-gateways" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <h1 class="text-3xl font-extrabold mb-6">Všechny SMS brány</h1>
             <div id="fullGatewaysGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -163,15 +167,18 @@
         let links = JSON.parse(localStorage.getItem('sms_links')) || [
             { id: 1, name: "Český telekomunikační úřad", url: "https://www.ctu.cz", desc: "Regulátor telekomunikačního trhu.", category: "Úřady", bannerUrl: "" }
         ];
-        let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
+        let banners = JSON.parse(localStorage.getItem('sms_banners')) || [];
         let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "Reklamní prostor pro vaši nabídku", topLink: "#", topHtml: "" };
+        let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
+        let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
         document.addEventListener('DOMContentLoaded', () => {
             renderGateways();
             renderLinks();
             renderGuestbook();
+            renderDynamicBanners();
             renderAds();
-            initCounter();
+            incrementAndDisplayStats();
         });
 
         function switchView(viewName) {
@@ -182,6 +189,27 @@
 
         function toggleMobileMenu() {
             document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function renderDynamicBanners() {
+            const container = document.getElementById('dynamicBannersSection');
+            if(!banners.length) {
+                container.innerHTML = '';
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'grid';
+            container.innerHTML = banners.map(b => `
+                <a href="${b.url}" target="_blank" class="block bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl hover:border-cyan-500/50 transition group">
+                    <div class="w-full h-36 overflow-hidden bg-slate-950">
+                        <img src="${b.imageUrl}" alt="${b.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-white text-sm group-hover:text-cyan-400 transition">${b.title}</h4>
+                        ${b.desc ? `<p class="text-xs text-slate-400 mt-1">${b.desc}</p>` : ''}
+                    </div>
+                </a>
+            `).join('');
         }
 
         function renderGateways() {
@@ -263,6 +291,19 @@
             `).join('');
         }
 
+        function renderAds() {
+            const container = document.getElementById('topAdContent');
+            const linkEl = document.getElementById('topAdLink');
+            if(ads.topHtml && ads.topHtml.trim() !== "") {
+                container.innerHTML = ads.topHtml;
+                linkEl.style.display = 'none';
+            } else {
+                container.innerHTML = `<span class="inline-block bg-amber-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded uppercase tracking-wider mb-1">Reklama</span><p class="text-sm font-semibold text-slate-200">${ads.topText}</p>`;
+                linkEl.href = ads.topLink;
+                linkEl.style.display = 'inline-flex';
+            }
+        }
+
         function renderGuestbook() {
             const list = document.getElementById('guestbookEntriesList');
             if(!list) return;
@@ -283,28 +324,15 @@
             document.getElementById('guestbookForm').reset();
         }
 
-        function renderAds() {
-            const container = document.getElementById('topAdContent');
-            const linkEl = document.getElementById('topAdLink');
-            if(ads.topHtml && ads.topHtml.trim() !== "") {
-                container.innerHTML = ads.topHtml;
-                linkEl.style.display = 'none';
-            } else {
-                container.innerHTML = `<span class="inline-block bg-amber-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded uppercase tracking-wider mb-1">Reklama</span><p class="text-sm font-semibold text-slate-200">${ads.topText}</p>`;
-                linkEl.href = ads.topLink;
-                linkEl.style.display = 'inline-flex';
-            }
-        }
+        function incrementAndDisplayStats() {
+            visitStats.today = (visitStats.today || 0) + 1;
+            visitStats.month = (visitStats.month || 0) + 1;
+            visitStats.total = (visitStats.total || 0) + 1;
+            localStorage.setItem('sms_visits', JSON.stringify(visitStats));
 
-        // Spolehlivé lokální počítadlo (nikdy nespadne na 1)
-        function initCounter() {
-            let views = parseInt(localStorage.getItem('sms_site_views') || '1');
-            views++;
-            localStorage.setItem('sms_site_views', views);
-            
-            const countStr = views.toLocaleString('cs-CZ');
-            document.getElementById('statTotal').textContent = countStr;
-            document.getElementById('statToday').textContent = countStr;
+            document.getElementById('statToday').innerText = visitStats.today.toLocaleString('cs-CZ');
+            document.getElementById('statMonth').innerText = visitStats.month.toLocaleString('cs-CZ');
+            document.getElementById('statTotal').innerText = visitStats.total.toLocaleString('cs-CZ');
         }
     </script>
 </body>
