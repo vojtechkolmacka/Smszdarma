@@ -56,8 +56,8 @@
         <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-4">
             <button onclick="switchTab('gateways')" id="tabBtn-gateways" class="adm-tab-btn bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">SMS Brány</button>
             <button onclick="switchTab('links')" id="tabBtn-links" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Užitečné odkazy</button>
+            <button onclick="switchTab('banners')" id="tabBtn-banners" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Bannery s odkazy</button>
             <button onclick="switchTab('guestbook')" id="tabBtn-guestbook" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Kniha návštěv</button>
-            <button onclick="switchTab('ads')" id="tabBtn-ads" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Reklamní bannery</button>
         </div>
 
         <!-- TAB: BRÁNY -->
@@ -76,48 +76,26 @@
             </div>
         </div>
 
-        <!-- TAB: KNIHA NÁVŠTĚV -->
-        <div id="tab-guestbook" class="tab-content hidden space-y-4"><div id="admGuestbookList" class="space-y-3"></div></div>
-
-        <!-- TAB: REKLAMY -->
-        <div id="tab-ads" class="tab-content hidden space-y-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-                <h3 class="font-bold text-white">Nastavení reklamního banneru</h3>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Standardní text reklamy</label>
-                    <input type="text" id="editTopText" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Text reklamy">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Odkaz reklamy</label>
-                    <input type="text" id="editTopLink" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="Cílový odkaz URL">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo nahrát obrázkový banner přímo z mobilu</label>
-                    <input type="file" id="editTopFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo vložte vlastní HTML kód banneru</label>
-                    <textarea id="editTopHtml" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder='např. reklamní kód'></textarea>
-                </div>
-                <button onclick="saveAdsWithFile()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Uložit reklamu</button>
+        <!-- TAB: BANNERY S ODKAZY -->
+        <div id="tab-banners" class="tab-content hidden space-y-4">
+            <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa bannerů s odkazy</h3><button onclick="openBannerModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat banner</button></div>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+                <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Náhled</th><th class="p-4">Nadpis / Popis</th><th class="p-4">Cílový odkaz</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admBannersTable" class="divide-y divide-slate-800"></tbody></table>
             </div>
         </div>
+
+        <!-- TAB: KNIHA NÁVŠTĚV -->
+        <div id="tab-guestbook" class="tab-content hidden space-y-4"><div id="admGuestbookList" class="space-y-3"></div></div>
     </div>
 
-    <!-- MODAL BRÁNA (S VÝBĚREM STAVU A REGISTRACE) -->
+    <!-- MODAL BRÁNA -->
     <div id="gwModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
             <h3 id="gwModalTitle" class="font-bold text-white">Přidat/Upravit SMS portál</h3>
             <form onsubmit="saveGateway(event)" class="space-y-3 text-xs">
                 <input type="hidden" id="gwId">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Název brány</label>
-                    <input type="text" id="gwName" required placeholder="např. PoslatSMS.cz" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">URL adresa</label>
-                    <input type="url" id="gwUrl" required placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                </div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Název brány</label><input type="text" id="gwName" required placeholder="např. PoslatSMS.cz" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">URL adresa</label><input type="url" id="gwUrl" required placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Registrace</label>
@@ -136,10 +114,7 @@
                         </select>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Popis</label>
-                    <textarea id="gwDesc" required placeholder="Stručný popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea>
-                </div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Popis</label><textarea id="gwDesc" required placeholder="Stručný popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea></div>
                 <div class="flex justify-end gap-2 pt-2"><button type="button" onclick="closeGatewayModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
             </form>
         </div>
@@ -154,12 +129,24 @@
                 <input type="text" id="linkName" required placeholder="Název odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="url" id="linkUrl" required placeholder="URL adresa odkazu" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <input type="text" id="linkCategory" required placeholder="Kategorie" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white" value="Užitečné">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nahrát nový obrázek / banner z mobilu</label>
-                    <input type="file" id="linkFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
-                </div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Nahrát obrázek / banner z mobilu</label><input type="file" id="linkFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400"></div>
                 <input type="text" id="linkDesc" required placeholder="Popis" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 <div class="flex justify-end gap-2"><button type="button" onclick="closeLinkModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL BANNER S ODKAZEM -->
+    <div id="bannerModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
+            <h3 id="bannerModalTitle" class="font-bold text-white">Přidat/Upravit banner s odkazem</h3>
+            <form onsubmit="saveBannerWithFile(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="bannerId">
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Nadpis banneru</label><input type="text" id="bannerTitle" required placeholder="např. Speciální akce" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Cílový proklikový odkaz (URL)</label><input type="url" id="bannerUrl" required placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Nahrát obrázek banneru z mobilu</label><input type="file" id="bannerFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400"></div>
+                <div><label class="block text-xs font-semibold text-slate-300 mb-1">Popis / podnadpis</label><textarea id="bannerDesc" placeholder="Volitelný text" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></textarea></div>
+                <div class="flex justify-end gap-2 pt-2"><button type="button" onclick="closeBannerModal()" class="bg-slate-800 px-4 py-2 rounded-xl text-white">Zrušit</button><button type="submit" class="bg-cyan-500 px-4 py-2 rounded-xl text-slate-950 font-bold">Uložit</button></div>
             </form>
         </div>
     </div>
@@ -178,8 +165,8 @@
         let links = JSON.parse(localStorage.getItem('sms_links')) || [
             { id: 1, name: "Český telekomunikační úřad", url: "https://www.ctu.cz", desc: "Regulátor telekomunikačního trhu.", category: "Úřady", bannerUrl: "" }
         ];
+        let banners = JSON.parse(localStorage.getItem('sms_banners')) || [];
         let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
-        let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "Reklamní prostor pro vaši nabídku", topLink: "#", topHtml: "" };
         let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -254,6 +241,18 @@
                 </tr>
             `).join('') || `<tr><td colspan="4" class="p-4 text-center text-slate-500">Žádné odkazy</td></tr>`;
 
+            document.getElementById('admBannersTable').innerHTML = banners.map(b => `
+                <tr class="border-b border-slate-800">
+                    <td class="p-4"><img src="${b.imageUrl}" class="w-16 h-10 object-cover rounded"></td>
+                    <td class="p-4 font-bold text-white">${b.title}<br><span class="text-[10px] text-slate-400">${b.desc || ''}</span></td>
+                    <td class="p-4 text-cyan-400">${b.url}</td>
+                    <td class="p-4 text-right space-x-3">
+                        <button onclick="editBanner(${b.id})" class="text-cyan-400 font-semibold hover:underline">Upravit</button>
+                        <button onclick="deleteBanner(${b.id})" class="text-rose-400 font-semibold hover:underline">Smazat</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="4" class="p-4 text-center text-slate-500">Žádné bannery</td></tr>`;
+
             document.getElementById('admGuestbookList').innerHTML = guestbook.map(g => `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
                     <div><span class="font-bold text-white">${g.author}</span>: <span class="text-slate-300">${g.message}</span></div>
@@ -263,179 +262,93 @@
                     </div>
                 </div>
             `).join('') || `<p class="text-slate-500 text-center py-4">Žádné vzkazy.</p>`;
-
-            document.getElementById('editTopText').value = ads.topText || '';
-            document.getElementById('editTopLink').value = ads.topLink || '#';
-            document.getElementById('editTopHtml').value = ads.topHtml || '';
         }
 
-        // SMS Brány - CRUD
+        // SMS Brány
         function openGatewayModal() {
-            document.getElementById('gwId').value = "";
-            document.getElementById('gwName').value = "";
-            document.getElementById('gwUrl').value = "";
-            document.getElementById('gwReg').value = "Bez registrace";
-            document.getElementById('gwStatus').value = "Funkční – ověřeno";
-            document.getElementById('gwDesc').value = "";
+            document.getElementById('gwId').value = ""; document.getElementById('gwName').value = ""; document.getElementById('gwUrl').value = "";
+            document.getElementById('gwReg').value = "Bez registrace"; document.getElementById('gwStatus').value = "Funkční – ověřeno"; document.getElementById('gwDesc').value = "";
             document.getElementById('gwModal').classList.remove('hidden');
         }
         function closeGatewayModal() { document.getElementById('gwModal').classList.add('hidden'); }
-        
         function editGateway(id) {
-            const gw = gateways.find(g => g.id === id);
-            if(!gw) return;
-            document.getElementById('gwId').value = gw.id;
-            document.getElementById('gwName').value = gw.name;
-            document.getElementById('gwUrl').value = gw.url;
-            document.getElementById('gwReg').value = gw.reg || "Bez registrace";
-            document.getElementById('gwStatus').value = gw.status || "Funkční – ověřeno";
-            document.getElementById('gwDesc').value = gw.desc;
+            const gw = gateways.find(g => g.id === id); if(!gw) return;
+            document.getElementById('gwId').value = gw.id; document.getElementById('gwName').value = gw.name; document.getElementById('gwUrl').value = gw.url;
+            document.getElementById('gwReg').value = gw.reg || "Bez registrace"; document.getElementById('gwStatus').value = gw.status || "Funkční – ověřeno"; document.getElementById('gwDesc').value = gw.desc;
             document.getElementById('gwModal').classList.remove('hidden');
         }
-
         function saveGateway(e) {
             e.preventDefault();
             const id = document.getElementById('gwId').value;
-            const name = document.getElementById('gwName').value;
-            const url = document.getElementById('gwUrl').value;
-            const reg = document.getElementById('gwReg').value;
-            const status = document.getElementById('gwStatus').value;
-            const desc = document.getElementById('gwDesc').value;
-
-            if(id) {
-                const index = gateways.findIndex(g => g.id == id);
-                if(index !== -1) {
-                    gateways[index].name = name;
-                    gateways[index].url = url;
-                    gateways[index].reg = reg;
-                    gateways[index].status = status;
-                    gateways[index].desc = desc;
-                }
-            } else {
-                gateways.push({
-                    id: Date.now(),
-                    name, url, reg, status, desc,
-                    operators: ["O2", "T-Mobile", "Vodafone"],
-                    maxChars: "160 znaků"
-                });
-            }
-            localStorage.setItem('sms_gateways', JSON.stringify(gateways));
-            closeGatewayModal(); renderAdminData();
+            const data = { id: id ? Number(id) : Date.now(), name: document.getElementById('gwName').value, url: document.getElementById('gwUrl').value, reg: document.getElementById('gwReg').value, status: document.getElementById('gwStatus').value, desc: document.getElementById('gwDesc').value, operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků" };
+            if(id) { const i = gateways.findIndex(g => g.id == id); if(i !== -1) gateways[i] = data; } else { gateways.push(data); }
+            localStorage.setItem('sms_gateways', JSON.stringify(gateways)); closeGatewayModal(); renderAdminData();
         }
         function deleteGateway(id) {
-            if(confirm('Opravdu smazat bránu?')) {
-                gateways = gateways.filter(g => g.id !== id);
-                localStorage.setItem('sms_gateways', JSON.stringify(gateways));
-                renderAdminData();
-            }
+            if(confirm('Opravdu smazat bránu?')) { gateways = gateways.filter(g => g.id !== id); localStorage.setItem('sms_gateways', JSON.stringify(gateways)); renderAdminData(); }
         }
 
-        // Užitečné odkazy - CRUD
+        // Užitečné odkazy
         function openLinkModal() {
-            document.getElementById('linkId').value = "";
-            document.getElementById('linkName').value = "";
-            document.getElementById('linkUrl').value = "";
-            document.getElementById('linkCategory').value = "Užitečné";
-            document.getElementById('linkDesc').value = "";
-            document.getElementById('linkFile').value = "";
+            document.getElementById('linkId').value = ""; document.getElementById('linkName').value = ""; document.getElementById('linkUrl').value = "";
+            document.getElementById('linkCategory').value = "Užitečné"; document.getElementById('linkDesc').value = ""; document.getElementById('linkFile').value = "";
             document.getElementById('linkModal').classList.remove('hidden');
         }
         function closeLinkModal() { document.getElementById('linkModal').classList.add('hidden'); }
-
         function editLink(id) {
-            const l = links.find(item => item.id === id);
-            if(!l) return;
-            document.getElementById('linkId').value = l.id;
-            document.getElementById('linkName').value = l.name;
-            document.getElementById('linkUrl').value = l.url;
-            document.getElementById('linkCategory').value = l.category;
-            document.getElementById('linkDesc').value = l.desc;
-            document.getElementById('linkFile').value = "";
+            const l = links.find(item => item.id === id); if(!l) return;
+            document.getElementById('linkId').value = l.id; document.getElementById('linkName').value = l.name; document.getElementById('linkUrl').value = l.url;
+            document.getElementById('linkCategory').value = l.category; document.getElementById('linkDesc').value = l.desc; document.getElementById('linkFile').value = "";
             document.getElementById('linkModal').classList.remove('hidden');
         }
-
         function saveLinkWithFile(e) {
-            e.preventDefault();
-            const id = document.getElementById('linkId').value;
-            const fileInput = document.getElementById('linkFile');
-            
+            e.preventDefault(); const id = document.getElementById('linkId').value; const fileInput = document.getElementById('linkFile');
             if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    finishSaveLink(id, uploadEvent.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                const existing = id ? links.find(l => l.id == id) : null;
-                finishSaveLink(id, existing ? existing.bannerUrl : "");
-            }
+                const reader = new FileReader(); reader.onload = (ev) => finishSaveLink(id, ev.target.result); reader.readAsDataURL(fileInput.files[0]);
+            } else { const ex = id ? links.find(l => l.id == id) : null; finishSaveLink(id, ex ? ex.bannerUrl : ""); }
         }
-
         function finishSaveLink(id, bannerDataUrl) {
-            const name = document.getElementById('linkName').value;
-            const url = document.getElementById('linkUrl').value;
-            const category = document.getElementById('linkCategory').value;
-            const desc = document.getElementById('linkDesc').value;
-
-            if(id) {
-                const index = links.findIndex(l => l.id == id);
-                if(index !== -1) {
-                    links[index].name = name;
-                    links[index].url = url;
-                    links[index].category = category;
-                    links[index].desc = desc;
-                    if(bannerDataUrl) links[index].bannerUrl = bannerDataUrl;
-                }
-            } else {
-                links.push({
-                    id: Date.now(),
-                    name, url, category, desc,
-                    bannerUrl: bannerDataUrl
-                });
-            }
-            localStorage.setItem('sms_links', JSON.stringify(links));
-            closeLinkModal(); renderAdminData();
+            const data = { id: id ? Number(id) : Date.now(), name: document.getElementById('linkName').value, url: document.getElementById('linkUrl').value, category: document.getElementById('linkCategory').value, desc: document.getElementById('linkDesc').value, bannerUrl: bannerDataUrl };
+            if(id) { const i = links.findIndex(l => l.id == id); if(i !== -1) links[i] = { ...links[i], ...data, bannerUrl: bannerDataUrl || links[i].bannerUrl }; } else { links.push(data); }
+            localStorage.setItem('sms_links', JSON.stringify(links)); closeLinkModal(); renderAdminData();
+        }
+        function deleteLink(id) {
+            if(confirm('Opravdu smazat odkaz?')) { links = links.filter(l => l.id !== id); localStorage.setItem('sms_links', JSON.stringify(links)); renderAdminData(); }
         }
 
-        function deleteLink(id) {
-            if(confirm('Opravdu smazat odkaz?')) {
-                links = links.filter(l => l.id !== id);
-                localStorage.setItem('sms_links', JSON.stringify(links));
-                renderAdminData();
-            }
+        // Bannery s odkazy
+        function openBannerModal() {
+            document.getElementById('bannerId').value = ""; document.getElementById('bannerTitle').value = ""; document.getElementById('bannerUrl').value = "";
+            document.getElementById('bannerFile').value = ""; document.getElementById('bannerDesc').value = "";
+            document.getElementById('bannerModal').classList.remove('hidden');
+        }
+        function closeBannerModal() { document.getElementById('bannerModal').classList.add('hidden'); }
+        function editBanner(id) {
+            const b = banners.find(item => item.id === id); if(!b) return;
+            document.getElementById('bannerId').value = b.id; document.getElementById('bannerTitle').value = b.title; document.getElementById('bannerUrl').value = b.url;
+            document.getElementById('bannerDesc').value = b.desc || ""; document.getElementById('bannerFile').value = "";
+            document.getElementById('bannerModal').classList.remove('hidden');
+        }
+        function saveBannerWithFile(e) {
+            e.preventDefault(); const id = document.getElementById('bannerId').value; const fileInput = document.getElementById('bannerFile');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader(); reader.onload = (ev) => finishSaveBanner(id, ev.target.result); reader.readAsDataURL(fileInput.files[0]);
+            } else { const ex = id ? banners.find(b => b.id == id) : null; finishSaveBanner(id, ex ? ex.imageUrl : ""); }
+        }
+        function finishSaveBanner(id, imgDataUrl) {
+            const data = { id: id ? Number(id) : Date.now(), title: document.getElementById('bannerTitle').value, url: document.getElementById('bannerUrl').value, desc: document.getElementById('bannerDesc').value, imageUrl: imgDataUrl };
+            if(id) { const i = banners.findIndex(b => b.id == id); if(i !== -1) banners[i] = { ...banners[i], ...data, imageUrl: imgDataUrl || banners[i].imageUrl }; } else { banners.push(data); }
+            localStorage.setItem('sms_banners', JSON.stringify(banners)); closeBannerModal(); renderAdminData();
+        }
+        function deleteBanner(id) {
+            if(confirm('Opravdu smazat banner?')) { banners = banners.filter(b => b.id !== id); localStorage.setItem('sms_banners', JSON.stringify(banners)); renderAdminData(); }
         }
 
         function approveGb(id) {
-            const item = guestbook.find(g => g.id === id);
-            if(item) { item.approved = true; localStorage.setItem('sms_guestbook', JSON.stringify(guestbook)); renderAdminData(); }
+            const item = guestbook.find(g => g.id === id); if(item) { item.approved = true; localStorage.setItem('sms_guestbook', JSON.stringify(guestbook)); renderAdminData(); }
         }
         function deleteGb(id) {
-            guestbook = guestbook.filter(g => g.id !== id);
-            localStorage.setItem('sms_guestbook', JSON.stringify(guestbook));
-            renderAdminData();
-        }
-
-        function saveAdsWithFile() {
-            const fileInput = document.getElementById('editTopFile');
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    const imgTag = `<img src="${uploadEvent.target.result}" class="w-full rounded-xl object-cover max-h-24">`;
-                    finishSaveAds(imgTag);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                finishSaveAds(document.getElementById('editTopHtml').value);
-            }
-        }
-
-        function finishSaveAds(htmlContent) {
-            ads.topText = document.getElementById('editTopText').value;
-            ads.topLink = document.getElementById('editTopLink').value;
-            ads.topHtml = htmlContent;
-            localStorage.setItem('sms_ads', JSON.stringify(ads));
-            alert('Reklama uložena.');
-        }
+            guestbook = guestbook.filter(g => g.id !== id); localStorage.setItem('sms_guestbook', JSON.stringify(guestbook)); renderAdminData(); }
     </script>
 </body>
 </html>
