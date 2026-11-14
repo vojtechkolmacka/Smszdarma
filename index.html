@@ -298,7 +298,7 @@
 
         // Spolehlivé lokální počítadlo (nikdy nespadne na 1)
         function initCounter() {
-            let views = parseInt(localStorage.getItem('sms_site_views') || '1420');
+            let views = parseInt(localStorage.getItem('sms_site_views') || '1');
             views++;
             localStorage.setItem('sms_site_views', views);
             
