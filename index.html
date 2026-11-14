@@ -114,9 +114,9 @@
                 <div class="mt-12 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
                     <h3 class="text-lg font-bold flex items-center gap-2 mb-6 pb-4 border-b border-slate-800"><i class="fa-solid fa-chart-line text-cyan-400"></i> Statistiky návštěvnosti webu</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Dnes návštěv</span><span class="text-3xl font-extrabold text-cyan-400" id="statToday">0</span></div>
-                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Posledních 30 dní</span><span class="text-3xl font-extrabold text-white" id="statMonth">0</span></div>
-                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Celkový počet návštěv</span><span class="text-3xl font-extrabold text-sky-400" id="statTotal">0</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Dnes návštěv</span><span class="text-3xl font-extrabold text-cyan-400" id="statToday">Načítám...</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Aktivní relace</span><span class="text-3xl font-extrabold text-white" id="statMonth">1</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Celkový počet návštěv</span><span class="text-3xl font-extrabold text-sky-400" id="statTotal">Načítám...</span></div>
                     </div>
                 </div>
             </section>
@@ -165,14 +165,13 @@
         ];
         let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
         let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "Reklamní prostor pro vaši nabídku", topLink: "#", topHtml: "" };
-        let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
         document.addEventListener('DOMContentLoaded', () => {
             renderGateways();
             renderLinks();
             renderGuestbook();
             renderAds();
-            updateStatsDisplay();
+            initCounter();
         });
 
         function switchView(viewName) {
@@ -202,7 +201,6 @@
             });
 
             const html = filtered.map(gw => {
-                // Určení barvy kroužku podle stavu
                 let badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
                 let dotClass = "bg-emerald-400";
                 
@@ -298,10 +296,26 @@
             }
         }
 
-        function updateStatsDisplay() {
-            document.getElementById('statToday').innerText = visitStats.today.toLocaleString('cs-CZ');
-            document.getElementById('statMonth').innerText = visitStats.month.toLocaleString('cs-CZ');
-            document.getElementById('statTotal').innerText = visitStats.total.toLocaleString('cs-CZ');
+        // Živé počítadlo návštěv přes CounterAPI
+        function initCounter() {
+            const namespace = 'kolobeznik-cz-projekty';
+            const key = 'sms-brana';
+
+            fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Chyba sítě');
+                    return response.json();
+                })
+                .then(data => {
+                    const countStr = data.count.toLocaleString('cs-CZ');
+                    document.getElementById('statTotal').textContent = countStr;
+                    document.getElementById('statToday').textContent = countStr;
+                })
+                .catch(error => {
+                    console.error('Počítadlo se nepodařilo načíst:', error);
+                    document.getElementById('statTotal').textContent = '1';
+                    document.getElementById('statToday').textContent = '1';
+                });
         }
     </script>
 </body>
