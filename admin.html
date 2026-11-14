@@ -109,7 +109,7 @@
                     <input type="text" id="editTopLink" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder="https://...">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo nahrát obrázkový banner přímo z mobilu</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo nahrát obrázkový banner přímo z mobilu (automaticky se zmenší)</label>
                     <input type="file" id="editTopFile" accept="image/*" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
                 </div>
                 <div>
@@ -246,9 +246,13 @@
         function resetVisits() {
             if(confirm('Opravdu chcete vynulovat počítadlo návštěvnosti?')) {
                 visitStats = { today: 0, month: 0, total: 0 };
-                localStorage.setItem('sms_visits', JSON.stringify(visitStats));
-                document.getElementById('admCurrentVisits').innerText = "0";
-                alert('Počítadlo bylo vynulováno.');
+                try {
+                    localStorage.setItem('sms_visits', JSON.stringify(visitStats));
+                    document.getElementById('admCurrentVisits').innerText = "0";
+                    alert('Počítadlo bylo vynulováno.');
+                } catch(err) {
+                    alert('Chyba při ukládání: ' + err.message);
+                }
             }
         }
 
@@ -296,6 +300,47 @@
             document.getElementById('editTopHtml').value = ads.topHtml || '';
         }
 
+        // Pomocná funkce pro kompresi obrázku (zabrání zaplnění paměti localStorage)
+        function compressAndResizeImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 800; // Maximální šířka/výška
+                    if (width > height && width > maxDim) {
+                        height *= maxDim / width;
+                        width = maxDim;
+                    } else if (height > maxDim) {
+                        width *= maxDim / height;
+                        height = maxDim;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    // Převedení na JPEG s kompresí 0.7
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    callback(dataUrl);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Bezpečné uložení do localStorage s kontrolou kapacity
+        function safeSetItem(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+            } catch (e) {
+                alert('Chyba při ukládání: Paměť prohlížeče je plná. Zkuste nahrát menší obrázek.');
+                return false;
+            }
+        }
+
         // SMS Brány
         function openGatewayModal() {
             document.getElementById('gwId').value = ""; document.getElementById('gwName').value = ""; document.getElementById('gwUrl').value = "";
@@ -314,48 +359,40 @@
             const id = document.getElementById('gwId').value;
             const data = { id: id ? Number(id) : Date.now(), name: document.getElementById('gwName').value, url: document.getElementById('gwUrl').value, reg: document.getElementById('gwReg').value, status: document.getElementById('gwStatus').value, desc: document.getElementById('gwDesc').value, operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků" };
             if(id) { const i = gateways.findIndex(g => g.id == id); if(i !== -1) gateways[i] = data; } else { gateways.push(data); }
-            localStorage.setItem('sms_gateways', JSON.stringify(gateways)); closeGatewayModal(); renderAdminData();
+            if(safeSetItem('sms_gateways', gateways)) { closeGatewayModal(); renderAdminData(); }
         }
         function deleteGateway(id) {
-            if(confirm('Opravdu smazat bránu?')) { gateways = gateways.filter(g => g.id !== id); localStorage.setItem('sms_gateways', JSON.stringify(gateways)); renderAdminData(); }
+            if(confirm('Opravdu smazat bránu?')) { gateways = gateways.filter(g => g.id !== id); safeSetItem('sms_gateways', gateways); renderAdminData(); }
         }
 
         // Užitečné odkazy
         function openLinkModal() {
-            document.getElementById('linkId').value = ""; 
-            document.getElementById('linkName').value = ""; 
-            document.getElementById('linkUrl').value = "";
-            document.getElementById('linkCategory').value = "Užitečné"; 
-            document.getElementById('linkDesc').value = ""; 
-            document.getElementById('linkFile').value = "";
+            document.getElementById('linkId').value = ""; document.getElementById('linkName').value = ""; document.getElementById('linkUrl').value = "";
+            document.getElementById('linkCategory').value = "Užitečné"; document.getElementById('linkDesc').value = ""; document.getElementById('linkFile').value = "";
             document.getElementById('linkModalTitle').innerText = "Přidat užitečný odkaz";
             document.getElementById('linkModal').classList.remove('hidden');
         }
         function closeLinkModal() { document.getElementById('linkModal').classList.add('hidden'); }
         function editLink(id) {
             const l = links.find(item => item.id === id); if(!l) return;
-            document.getElementById('linkId').value = l.id; 
-            document.getElementById('linkName').value = l.name; 
-            document.getElementById('linkUrl').value = l.url;
-            document.getElementById('linkCategory').value = l.category || "Užitečné"; 
-            document.getElementById('linkDesc').value = l.desc || ""; 
-            document.getElementById('linkFile').value = "";
+            document.getElementById('linkId').value = l.id; document.getElementById('linkName').value = l.name; document.getElementById('linkUrl').value = l.url;
+            document.getElementById('linkCategory').value = l.category || "Užitečné"; document.getElementById('linkDesc').value = l.desc || ""; document.getElementById('linkFile').value = "";
             document.getElementById('linkModalTitle').innerText = "Upravit užitečný odkaz";
             document.getElementById('linkModal').classList.remove('hidden');
         }
         function saveLinkWithFile(e) {
             e.preventDefault(); const id = document.getElementById('linkId').value; const fileInput = document.getElementById('linkFile');
             if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader(); reader.onload = (ev) => finishSaveLink(id, ev.target.result); reader.readAsDataURL(fileInput.files[0]);
+                compressAndResizeImage(fileInput.files[0], (compressedUrl) => { finishSaveLink(id, compressedUrl); });
             } else { const ex = id ? links.find(l => l.id == id) : null; finishSaveLink(id, ex ? ex.bannerUrl : ""); }
         }
         function finishSaveLink(id, bannerDataUrl) {
             const data = { id: id ? Number(id) : Date.now(), name: document.getElementById('linkName').value, url: document.getElementById('linkUrl').value, category: document.getElementById('linkCategory').value, desc: document.getElementById('linkDesc').value, bannerUrl: bannerDataUrl };
             if(id) { const i = links.findIndex(l => l.id == id); if(i !== -1) links[i] = { ...links[i], ...data, bannerUrl: bannerDataUrl || links[i].bannerUrl }; } else { links.push(data); }
-            localStorage.setItem('sms_links', JSON.stringify(links)); closeLinkModal(); renderAdminData();
+            if(safeSetItem('sms_links', links)) { closeLinkModal(); renderAdminData(); }
         }
         function deleteLink(id) {
-            if(confirm('Opravdu smazat odkaz?')) { links = links.filter(l => l.id !== id); localStorage.setItem('sms_links', JSON.stringify(links)); renderAdminData(); }
+            if(confirm('Opravdu smazat odkaz?')) { links = links.filter(l => l.id !== id); safeSetItem('sms_links', links); renderAdminData(); }
         }
 
         // Bannery s odkazy
@@ -376,28 +413,26 @@
         function saveBannerWithFile(e) {
             e.preventDefault(); const id = document.getElementById('bannerId').value; const fileInput = document.getElementById('bannerFile');
             if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader(); reader.onload = (ev) => finishSaveBanner(id, ev.target.result); reader.readAsDataURL(fileInput.files[0]);
+                compressAndResizeImage(fileInput.files[0], (compressedUrl) => { finishSaveBanner(id, compressedUrl); });
             } else { const ex = id ? banners.find(b => b.id == id) : null; finishSaveBanner(id, ex ? ex.imageUrl : ""); }
         }
         function finishSaveBanner(id, imgDataUrl) {
             const data = { id: id ? Number(id) : Date.now(), title: document.getElementById('bannerTitle').value, url: document.getElementById('bannerUrl').value, desc: document.getElementById('bannerDesc').value, imageUrl: imgDataUrl };
             if(id) { const i = banners.findIndex(b => b.id == id); if(i !== -1) banners[i] = { ...banners[i], ...data, imageUrl: imgDataUrl || banners[i].imageUrl }; } else { banners.push(data); }
-            localStorage.setItem('sms_banners', JSON.stringify(banners)); closeBannerModal(); renderAdminData();
+            if(safeSetItem('sms_banners', banners)) { closeBannerModal(); renderAdminData(); }
         }
         function deleteBanner(id) {
-            if(confirm('Opravdu smazat banner?')) { banners = banners.filter(b => b.id !== id); localStorage.setItem('sms_banners', JSON.stringify(banners)); renderAdminData(); }
+            if(confirm('Opravdu smazat banner?')) { banners = banners.filter(b => b.id !== id); safeSetItem('sms_banners', banners); renderAdminData(); }
         }
 
         // Placená reklama
         function saveAdsWithFile() {
             const fileInput = document.getElementById('editTopFile');
             if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    const imgTag = `<img src="${uploadEvent.target.result}" class="w-full rounded-xl object-cover max-h-24">`;
+                compressAndResizeImage(fileInput.files[0], (compressedUrl) => {
+                    const imgTag = `<img src="${compressedUrl}" class="w-full rounded-xl object-cover max-h-24">`;
                     finishSaveAds(imgTag);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
+                });
             } else {
                 finishSaveAds(document.getElementById('editTopHtml').value);
             }
@@ -406,9 +441,16 @@
             ads.topText = document.getElementById('editTopText').value;
             ads.topLink = document.getElementById('editTopLink').value;
             ads.topHtml = htmlContent;
-            localStorage.setItem('sms_ads', JSON.stringify(ads));
-            alert('Placená reklama byla úspěšně uložena!');
+            if(safeSetItem('sms_ads', ads)) {
+                alert('Placená reklama byla úspěšně uložena!');
+            }
         }
+
+        function approveGb(id) {
+            const item = guestbook.find(g => g.id === id); if(item) { item.approved = true; safeSetItem('sms_guestbook', guestbook); renderAdminData(); }
+        }
+        function deleteGb(id) {
+            guestbook = guestbook.filter(g => g.id !== id); safeSetItem('sms_guestbook', guestbook); renderAdminData(); }
     </script>
 </body>
 </html>
