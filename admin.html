@@ -26,20 +26,26 @@
                 Přihlásit se <i class="fa-solid fa-arrow-right ml-1"></i>
             </button>
         </form>
+        <div class="text-center mt-4">
+            <a href="index.html" class="text-xs text-slate-500 hover:text-cyan-400 transition">&larr; Zpět na web</a>
+        </div>
     </div>
 
     <!-- ADMIN DASHBOARD -->
     <div id="adminDashboard" class="hidden max-w-6xl mx-auto space-y-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4">
             <h1 class="text-xl font-extrabold text-white"><i class="fa-solid fa-sliders text-cyan-400 mr-2"></i> PWA Administrace</h1>
-            <button onclick="adminLogout()" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-xl text-xs font-semibold">Odhlásit</button>
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold transition">Zobrazit web</a>
+                <button onclick="adminLogout()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-xl text-xs font-semibold transition">Odhlásit</button>
+            </div>
         </div>
 
         <!-- VYNULOVÁNÍ NÁVŠTĚV -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
                 <h3 class="font-bold text-white">Počítadlo návštěvnosti</h3>
-                <p class="text-xs text-slate-400">Aktuální celkový počet návštěv lze resetovat na nulu.</p>
+                <p class="text-xs text-slate-400">Aktuální stav: <strong id="admCurrentVisits" class="text-cyan-400">0</strong> celkových návštěv.</p>
             </div>
             <button onclick="resetVisits()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold px-4 py-2 rounded-xl text-xs transition">
                 <i class="fa-solid fa-rotate-right mr-1"></i> Vynulovat počitadlo návštěv
@@ -48,15 +54,15 @@
 
         <!-- ZÁLOŽKY -->
         <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-4">
-            <button onclick="switchTab('gateways')" id="tabBtn-gateways" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">SMS Brány</button>
-            <button onclick="switchTab('links')" id="tabBtn-links" class="bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Užitečné odkazy</button>
-            <button onclick="switchTab('guestbook')" id="tabBtn-guestbook" class="bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Kniha návštěv</button>
-            <button onclick="switchTab('ads')" id="tabBtn-ads" class="bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Reklamní bannery</button>
+            <button onclick="switchTab('gateways')" id="tabBtn-gateways" class="adm-tab-btn bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">SMS Brány</button>
+            <button onclick="switchTab('links')" id="tabBtn-links" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Užitečné odkazy</button>
+            <button onclick="switchTab('guestbook')" id="tabBtn-guestbook" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Kniha návštěv</button>
+            <button onclick="switchTab('ads')" id="tabBtn-ads" class="adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800">Reklamní bannery</button>
         </div>
 
         <!-- TAB: BRÁNY -->
         <div id="tab-gateways" class="tab-content space-y-4">
-            <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa SMS bran</h3><button onclick="openGatewayModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat bránu</button></div>
+            <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa SMS bran</h3><button onclick="openGatewayModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat bránu</button></div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
                 <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Název</th><th class="p-4">Stav</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admGatewaysTable" class="divide-y divide-slate-800"></tbody></table>
             </div>
@@ -64,7 +70,7 @@
 
         <!-- TAB: ODKAZY -->
         <div id="tab-links" class="tab-content hidden space-y-4">
-            <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa užitečných odkazů</h3><button onclick="openLinkModal()" class="bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat odkaz</button></div>
+            <div class="flex justify-between items-center"><h3 class="font-bold text-white">Správa užitečných odkazů</h3><button onclick="openLinkModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Přidat odkaz</button></div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
                 <table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-800"><tr><th class="p-4">Obrázek</th><th class="p-4">Název</th><th class="p-4">URL</th><th class="p-4 text-right">Akce</th></tr></thead><tbody id="admLinksTable" class="divide-y divide-slate-800"></tbody></table>
             </div>
@@ -93,13 +99,13 @@
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Nebo vložte vlastní HTML kód banneru</label>
                     <textarea id="editTopHtml" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" placeholder='např. reklamní kód'></textarea>
                 </div>
-                <button onclick="saveAdsWithFile()" class="bg-cyan-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Uložit reklamu</button>
+                <button onclick="saveAdsWithFile()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-5 py-2 rounded-xl text-xs">Uložit reklamu</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL BRÁNA (S VÝBĚREM STAVU) -->
-    <div id="gwModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
+    <!-- MODAL BRÁNA (S VÝBĚREM STAVU A REGISTRACE) -->
+    <div id="gwModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
             <h3 id="gwModalTitle" class="font-bold text-white">Přidat/Upravit SMS portál</h3>
             <form onsubmit="saveGateway(event)" class="space-y-3 text-xs">
@@ -112,14 +118,23 @@
                     <label class="block text-xs font-semibold text-slate-300 mb-1">URL adresa</label>
                     <input type="url" id="gwUrl" required placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Stav brány</label>
-                    <select id="gwStatus" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
-                        <option value="Funkční – ověřeno">🟢 Funkční – ověřeno (zelená)</option>
-                        <option value="Omezený provoz">🟠 Omezený provoz (oranžová)</option>
-                        <option value="Vyžaduje registraci">🟡 Vyžaduje registraci (žlutá)</option>
-                        <option value="Nefunkční">🔴 Nefunkční (červená)</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Registrace</label>
+                        <select id="gwReg" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                            <option value="Bez registrace">Bez registrace</option>
+                            <option value="Registrace">Vyžaduje registraci</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Stav brány</label>
+                        <select id="gwStatus" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+                            <option value="Funkční – ověřeno">🟢 Funkční – ověřeno</option>
+                            <option value="Omezený provoz">🟠 Omezený provoz</option>
+                            <option value="Vyžaduje registraci">🟡 Vyžaduje registraci</option>
+                            <option value="Nefunkční">🔴 Nefunkční</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Popis</label>
@@ -131,7 +146,7 @@
     </div>
 
     <!-- MODAL ODKAZ -->
-    <div id="linkModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4">
+    <div id="linkModal" class="fixed inset-0 hidden bg-slate-950/90 flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
             <h3 id="linkModalTitle" class="font-bold text-white">Přidat/Upravit užitečný odkaz</h3>
             <form onsubmit="saveLinkWithFile(event)" class="space-y-3 text-xs">
@@ -150,10 +165,21 @@
     </div>
 
     <script>
-        let gateways = JSON.parse(localStorage.getItem('sms_gateways')) || [];
-        let links = JSON.parse(localStorage.getItem('sms_links')) || [];
+        const DEFAULT_GATEWAYS = [
+            { id: 1, name: "PoslatSMS.cz", url: "https://www.poslatsms.cz", desc: "Bezplatné odesílání SMS do českých sítí. Rychlé a spolehlivé.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 2, name: "SMSKit.cz", url: "https://www.smskit.cz", desc: "Odesílání SMS zdarma, s jednoduchým formulářem.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 3, name: "T-Mobile SMS brána", url: "https://www.t-mobile.cz", desc: "Oficiální bezplatná SMS brána T-Mobile.", operators: ["T-Mobile"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 4, name: "SMS zóna", url: "https://www.smszona.cz", desc: "Bezplatné SMS zprávy do všech hlavních českých sítí.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 5, name: "eSeMeSka.cz", url: "https://www.esemeska.cz", desc: "Odesílání SMS zdarma, může mít denní limit zpráv.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Omezený provoz" },
+            { id: 6, name: "GoSMS.cz", url: "https://www.gosms.cz", desc: "SMS brána s registrací uživatele.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Registrace", status: "Vyžaduje registraci" }
+        ];
+
+        let gateways = JSON.parse(localStorage.getItem('sms_gateways')) || DEFAULT_GATEWAYS;
+        let links = JSON.parse(localStorage.getItem('sms_links')) || [
+            { id: 1, name: "Český telekomunikační úřad", url: "https://www.ctu.cz", desc: "Regulátor telekomunikačního trhu.", category: "Úřady", bannerUrl: "" }
+        ];
         let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
-        let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "", topLink: "#", topHtml: "" };
+        let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "Reklamní prostor pro vaši nabídku", topLink: "#", topHtml: "" };
         let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -186,17 +212,25 @@
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${name}`).classList.remove('hidden');
+
+            document.querySelectorAll('.adm-tab-btn').forEach(btn => {
+                btn.className = "adm-tab-btn bg-slate-900 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs border border-slate-800";
+            });
+            document.getElementById(`tabBtn-${name}`).className = "adm-tab-btn bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs";
         }
 
         function resetVisits() {
             if(confirm('Opravdu chcete vynulovat počítadlo návštěvnosti?')) {
                 visitStats = { today: 0, month: 0, total: 0 };
                 localStorage.setItem('sms_visits', JSON.stringify(visitStats));
+                document.getElementById('admCurrentVisits').innerText = "0";
                 alert('Počítadlo bylo vynulováno.');
             }
         }
 
         function renderAdminData() {
+            document.getElementById('admCurrentVisits').innerText = (visitStats.total || 0).toLocaleString('cs-CZ');
+
             document.getElementById('admGatewaysTable').innerHTML = gateways.map(g => `
                 <tr class="border-b border-slate-800">
                     <td class="p-4 font-bold text-white">${g.name}</td>
@@ -222,16 +256,16 @@
 
             document.getElementById('admGuestbookList').innerHTML = guestbook.map(g => `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
-                    <div><span class="font-bold text-white">${g.author}</span>: ${g.message}</div>
-                    <div class="space-x-2">
-                        ${!g.approved ? `<button onclick="approveGb(${g.id})" class="bg-emerald-500 text-slate-950 px-3 py-1 rounded font-bold">Schválit</button>` : ''}
-                        <button onclick="deleteGb(${g.id})" class="text-rose-400 font-semibold">Smazat</button>
+                    <div><span class="font-bold text-white">${g.author}</span>: <span class="text-slate-300">${g.message}</span></div>
+                    <div class="space-x-2 shrink-0">
+                        ${!g.approved ? `<button onclick="approveGb(${g.id})" class="bg-emerald-500 text-slate-950 px-3 py-1 rounded font-bold text-xs">Schválit</button>` : '<span class="text-xs text-emerald-400 mr-2">Schváleno</span>'}
+                        <button onclick="deleteGb(${g.id})" class="text-rose-400 font-semibold text-xs">Smazat</button>
                     </div>
                 </div>
             `).join('') || `<p class="text-slate-500 text-center py-4">Žádné vzkazy.</p>`;
 
-            document.getElementById('editTopText').value = ads.topText;
-            document.getElementById('editTopLink').value = ads.topLink;
+            document.getElementById('editTopText').value = ads.topText || '';
+            document.getElementById('editTopLink').value = ads.topLink || '#';
             document.getElementById('editTopHtml').value = ads.topHtml || '';
         }
 
@@ -240,6 +274,7 @@
             document.getElementById('gwId').value = "";
             document.getElementById('gwName').value = "";
             document.getElementById('gwUrl').value = "";
+            document.getElementById('gwReg').value = "Bez registrace";
             document.getElementById('gwStatus').value = "Funkční – ověřeno";
             document.getElementById('gwDesc').value = "";
             document.getElementById('gwModal').classList.remove('hidden');
@@ -252,6 +287,7 @@
             document.getElementById('gwId').value = gw.id;
             document.getElementById('gwName').value = gw.name;
             document.getElementById('gwUrl').value = gw.url;
+            document.getElementById('gwReg').value = gw.reg || "Bez registrace";
             document.getElementById('gwStatus').value = gw.status || "Funkční – ověřeno";
             document.getElementById('gwDesc').value = gw.desc;
             document.getElementById('gwModal').classList.remove('hidden');
@@ -262,6 +298,7 @@
             const id = document.getElementById('gwId').value;
             const name = document.getElementById('gwName').value;
             const url = document.getElementById('gwUrl').value;
+            const reg = document.getElementById('gwReg').value;
             const status = document.getElementById('gwStatus').value;
             const desc = document.getElementById('gwDesc').value;
 
@@ -270,16 +307,16 @@
                 if(index !== -1) {
                     gateways[index].name = name;
                     gateways[index].url = url;
+                    gateways[index].reg = reg;
                     gateways[index].status = status;
                     gateways[index].desc = desc;
                 }
             } else {
                 gateways.push({
                     id: Date.now(),
-                    name, url, status, desc,
+                    name, url, reg, status, desc,
                     operators: ["O2", "T-Mobile", "Vodafone"],
-                    maxChars: "160 znaků",
-                    reg: "Bez registrace"
+                    maxChars: "160 znaků"
                 });
             }
             localStorage.setItem('sms_gateways', JSON.stringify(gateways));
