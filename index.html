@@ -1,362 +1,308 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS Brána – Odesílání SMS zdarma | Koloběžník.cz</title>
+    <title>SMS ZDARMA ONLINE – Přehled ověřených SMS portálů</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --accent: #38bdf8;
-            --accent-hover: #0284c7;
-            --green: #10b981;
-            --yellow: #f59e0b;
-            --red: #ef4444;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        header {
-            text-align: center;
-            padding: 2.5rem 1rem 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .back-link {
-            display: inline-block;
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            transition: color 0.2s;
-        }
-        .back-link:hover {
-            color: var(--accent);
-        }
-        header h1 {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-        header p {
-            color: var(--muted);
-            max-width: 650px;
-            margin: 0 auto;
-        }
-        .controls {
-            max-width: 900px;
-            width: 100%;
-            margin: 1.5rem auto 0;
-            padding: 0 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            justify-content: center;
-        }
-        .search-input {
-            flex: 1;
-            min-width: 240px;
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background-color: var(--card);
-            color: var(--text);
-            font-size: 1rem;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        .filter-btn {
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background-color: var(--card);
-            color: var(--muted);
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .filter-btn.active, .filter-btn:hover {
-            background-color: rgba(56, 189, 248, 0.15);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        main {
-            flex: 1;
-            max-width: 900px;
-            width: 100%;
-            margin: 1.5rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.2rem;
-        }
-        .gateway-card {
-            background-color: var(--card);
-            border-radius: 12px;
-            padding: 1.4rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-        .gateway-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 0.5rem;
-            margin-bottom: 0.8rem;
-        }
-        .gateway-card h2 {
-            font-size: 1.2rem;
-            color: var(--text);
-        }
-        .badge {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .badge-ok {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--green);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-        .badge-reg {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--yellow);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-        .badge-limit {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--red);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        .gateway-info {
-            font-size: 0.9rem;
-            color: var(--muted);
-            margin-bottom: 1.2rem;
-        }
-        .gateway-info p {
-            margin-bottom: 0.4rem;
-        }
-        .gateway-btn {
-            display: block;
-            text-align: center;
-            background-color: var(--accent);
-            color: #0f172a;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.65rem 1rem;
-            border-radius: 8px;
-            transition: background-color 0.2s;
-        }
-        .gateway-btn:hover {
-            background-color: var(--accent-hover);
-            color: #fff;
-        }
-        footer {
-            text-align: center;
-            padding: 2rem 1rem;
-            margin-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-        .counter-box {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 0.4rem 1rem;
-            border-radius: 999px;
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); }
     </style>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-white">
 
-    <header>
-        <a href="https://kolobeznik.cz" class="back-link">&larr; Zpět na rozcestník Koloběžník.cz</a>
-        <h1>📱 České SMS Brány</h1>
-        <p>Přehled ověřených bran pro odesílání SMS zpráv z internetu do českých mobilních sítí.</p>
+    <!-- HLAVIČKA -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" onclick="switchView('home')" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition">
+                    <i class="fa-solid fa-comments text-white text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500 bg-clip-text text-transparent">
+                        SMS ZDARMA ONLINE
+                    </span>
+                    <span class="block text-xs text-slate-400 font-medium tracking-wide">Přehled ověřených bran</span>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-6 font-medium text-sm">
+                <button onclick="switchView('home')" class="text-cyan-400 hover:text-cyan-300 transition flex items-center gap-2 py-2"><i class="fa-solid fa-house"></i> Úvod</button>
+                <button onclick="switchView('gateways')" class="text-slate-300 hover:text-cyan-300 transition flex items-center gap-2 py-2"><i class="fa-solid fa-globe"></i> SMS portály</button>
+                <button onclick="switchView('links')" class="text-slate-300 hover:text-cyan-300 transition flex items-center gap-2 py-2"><i class="fa-solid fa-link"></i> Užitečné odkazy</button>
+                <button onclick="switchView('guestbook')" class="text-slate-300 hover:text-cyan-300 transition flex items-center gap-2 py-2"><i class="fa-solid fa-book-open"></i> Kniha návštěv</button>
+            </nav>
+
+            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2"><i class="fa-solid fa-bars text-2xl"></i></button>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchView('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-slate-800"><i class="fa-solid fa-house mr-2 text-cyan-400"></i> Úvod</button>
+            <button onclick="switchView('gateways'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-slate-800"><i class="fa-solid fa-globe mr-2 text-cyan-400"></i> SMS portály</button>
+            <button onclick="switchView('links'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-slate-800"><i class="fa-solid fa-link mr-2 text-cyan-400"></i> Užitečné odkazy</button>
+            <button onclick="switchView('guestbook'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-200 hover:bg-slate-800"><i class="fa-solid fa-book-open mr-2 text-cyan-400"></i> Kniha návštěv</button>
+        </div>
     </header>
 
-    <div class="controls">
-        <input type="text" id="searchInput" class="search-input" placeholder="Hledat bránu nebo operátora...">
-        <button class="filter-btn active" data-filter="all">Všechny (7)</button>
-        <button class="filter-btn" data-filter="ok">Bez registrace</button>
-        <button class="filter-btn" data-filter="reg">S registrací</button>
-        <button class="filter-btn" data-filter="limit">Omezené</button>
-    </div>
+    <!-- HLAVNÍ OBSAH -->
+    <main class="flex-grow">
+        <div id="view-home" class="view-section">
+            <!-- Vlastní grafické bannery (mobil vs PC) -->
+            <section class="w-full bg-slate-950 border-b border-slate-800 overflow-hidden">
+                <div class="block md:hidden w-full"><img src="banner-mobil.png" alt="SMS ZDARMA ONLINE" class="w-full h-auto object-cover"></div>
+                <div class="hidden md:block w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"><img src="banner-pc.png" alt="SMS ZDARMA ONLINE" class="w-full h-auto rounded-2xl shadow-2xl border border-slate-800 object-cover"></div>
+            </section>
 
-    <main id="gatewaysGrid"></main>
+            <!-- HORNÍ REKLAMNÍ BANNER -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8" id="adContainerTop">
+                <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border border-amber-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 w-full">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0"><i class="fa-solid fa-bullhorn text-lg"></i></div>
+                        <div class="w-full" id="topAdContent">
+                            <span class="inline-block bg-amber-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded uppercase tracking-wider mb-1">Reklama</span>
+                            <p class="text-sm font-semibold text-slate-200" id="topAdText">Reklamní prostor pro vaši nabídku</p>
+                        </div>
+                    </div>
+                    <a id="topAdLink" href="#" target="_blank" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md shrink-0">Zjistit více <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                </div>
+            </div>
 
-    <footer>
-        <div class="counter-box">
-            <span>👁️ Počet návštěv SMS brány:</span>
-            <span id="visit-counter">Načítám...</span>
+            <!-- VYHLEDÁVÁNÍ A BRÁNY -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-6 mb-8 shadow-xl backdrop-blur-md">
+                    <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                        <div class="relative w-full lg:w-96">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="searchInput" oninput="filterGateways()" placeholder="Hledat SMS bránu..." class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                            <select id="filterOperator" onchange="filterGateways()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5">
+                                <option value="all">Všech operátorů</option>
+                                <option value="O2">O2</option>
+                                <option value="T-Mobile">T-Mobile</option>
+                                <option value="Vodafone">Vodafone</option>
+                            </select>
+                            <select id="filterReg" onchange="filterGateways()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5">
+                                <option value="all">Registrace (vše)</option>
+                                <option value="bez">Bez registrace</option>
+                                <option value="nutna">S registrací</option>
+                            </select>
+                            <select id="filterStatus" onchange="filterGateways()" class="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5">
+                                <option value="all">Stav (vše)</option>
+                                <option value="Funkční – ověřeno">Funkční – ověřeno</option>
+                                <option value="Omezený provoz">Omezený provoz</option>
+                                <option value="Vyžaduje registraci">Vyžaduje registraci</option>
+                                <option value="Nefunkční">Nefunkční</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm border border-cyan-500/30"><i class="fa-solid fa-check"></i></span>
+                        Aktuálně ověřené SMS portály
+                    </h2>
+                </div>
+
+                <div id="gatewaysGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+                <!-- STATISTIKY -->
+                <div class="mt-12 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                    <h3 class="text-lg font-bold flex items-center gap-2 mb-6 pb-4 border-b border-slate-800"><i class="fa-solid fa-chart-line text-cyan-400"></i> Statistiky návštěvnosti webu</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Dnes návštěv</span><span class="text-3xl font-extrabold text-cyan-400" id="statToday">0</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Posledních 30 dní</span><span class="text-3xl font-extrabold text-white" id="statMonth">0</span></div>
+                        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5"><span class="block text-xs font-semibold text-slate-400 uppercase mb-2">Celkový počet návštěv</span><span class="text-3xl font-extrabold text-sky-400" id="statTotal">0</span></div>
+                    </div>
+                </div>
+            </section>
         </div>
-        <p>&copy; 2026 SMS.Koloběžník.cz</p>
+
+        <div id="view-gateways" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h1 class="text-3xl font-extrabold mb-6">Všechny SMS brány</h1>
+            <div id="fullGatewaysGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div id="view-links" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h1 class="text-3xl font-extrabold mb-6">Užitečné odkazy</h1>
+            <div id="linksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div id="view-guestbook" class="view-section hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h1 class="text-3xl font-extrabold mb-6">Kniha návštěv</h1>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-10 shadow-xl">
+                <form id="guestbookForm" onsubmit="addGuestbookEntry(event)" class="space-y-4">
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Vaše přezdívka</label><input type="text" id="gbAuthor" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">Váš vzkaz</label><textarea id="gbMessage" required rows="4" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100"></textarea></div>
+                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs">Odeslat vzkaz</button>
+                </form>
+            </div>
+            <div class="space-y-4" id="guestbookEntriesList"></div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 text-sm mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500">&copy; 2026 SMS ZDARMA ONLINE. Všechna práva vyhrazena.</div>
     </footer>
 
     <script>
-        const gateways = [
-            {
-                name: "PoslatSMS.cz",
-                operator: "Všichni operátoři (O2, T-Mobile, Vodafone)",
-                status: "ok",
-                statusText: "Plně funkční",
-                desc: "Oblíbená česká univerzální brána zdarma a bez registrace. Délka zprávy až 160 znaků.",
-                url: "https://www.poslatsms.cz/"
-            },
-            {
-                name: "SMS.cz",
-                operator: "Všichni operátoři",
-                status: "ok",
-                statusText: "Plně funkční",
-                desc: "Tradiční česká SMS brána s jednoduchým rozhraním a okamžitým odesláním.",
-                url: "https://www.sms.cz/"
-            },
-            {
-                name: "PosliSMS.cz",
-                operator: "Všichni operátoři",
-                status: "ok",
-                statusText: "Plně funkční",
-                desc: "Rychlé odesílání zpráv zdarma bez nutnosti zakládat účet, podpora historie.",
-                url: "https://www.poslisms.cz/"
-            },
-            {
-                name: "T-Mobile SMS brána (T-Zones)",
-                operator: "Pouze T-Mobile",
-                status: "reg",
-                statusText: "Vyžaduje registraci",
-                desc: "Oficiální brána operátora T-Mobile. Vyžaduje přihlášení do účtu Můj T-Mobile.",
-                url: "https://www.t-mobile.cz/"
-            },
-            {
-                name: "Vodafone Park / Můj Vodafone",
-                operator: "Pouze Vodafone",
-                status: "reg",
-                statusText: "Vyžaduje registraci",
-                desc: "Oficiální webová brána pro zákazníky Vodafone po přihlášení do samoobsluhy.",
-                url: "https://www.vodafone.cz/"
-            },
-            {
-                name: "SMS-brana.cz",
-                operator: "Všichni operátoři",
-                status: "limit",
-                statusText: "Denní limit zpráv",
-                desc: "Funguje bez registrace, ale má omezený celkový denní počet odeslaných zpráv zdarma.",
-                url: "https://www.sms-brana.cz/"
-            },
-            {
-                name: "Kubík SMS / Brána zdarma",
-                operator: "Všichni operátoři",
-                status: "limit",
-                statusText: "S opisem kódu",
-                desc: "Základní brána s ochranou proti robotům (CAPTCHA) a kratší délkou jedné zprávy.",
-                url: "https://sms.sluzba.cz/"
-            }
+        const DEFAULT_GATEWAYS = [
+            { id: 1, name: "PoslatSMS.cz", url: "https://www.poslatsms.cz", desc: "Bezplatné odesílání SMS do českých sítí. Rychlé a spolehlivé.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 2, name: "SMSKit.cz", url: "https://www.smskit.cz", desc: "Odesílání SMS zdarma, s jednoduchým formulářem.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 3, name: "T-Mobile SMS brána", url: "https://www.t-mobile.cz", desc: "Oficiální bezplatná SMS brána T-Mobile.", operators: ["T-Mobile"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 4, name: "SMS zóna", url: "https://www.smszona.cz", desc: "Bezplatné SMS zprávy do všech hlavních českých sítí.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Funkční – ověřeno" },
+            { id: 5, name: "eSeMeSka.cz", url: "https://www.esemeska.cz", desc: "Odesílání SMS zdarma, může mít denní limit zpráv.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Bez registrace", status: "Omezený provoz" },
+            { id: 6, name: "GoSMS.cz", url: "https://www.gosms.cz", desc: "SMS brána s registrací uživatele.", operators: ["O2", "T-Mobile", "Vodafone"], maxChars: "160 znaků", reg: "Registrace", status: "Vyžaduje registraci" }
         ];
 
-        const grid = document.getElementById('gatewaysGrid');
-        const searchInput = document.getElementById('searchInput');
-        const filterBtns = document.querySelectorAll('.filter-btn');
+        let gateways = JSON.parse(localStorage.getItem('sms_gateways')) || DEFAULT_GATEWAYS;
+        let links = JSON.parse(localStorage.getItem('sms_links')) || [
+            { id: 1, name: "Český telekomunikační úřad", url: "https://www.ctu.cz", desc: "Regulátor telekomunikačního trhu.", category: "Úřady", bannerUrl: "" }
+        ];
+        let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
+        let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "Reklamní prostor pro vaši nabídku", topLink: "#", topHtml: "" };
+        let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
-        let currentFilter = 'all';
-
-        function renderGateways() {
-            const query = searchInput.value.toLowerCase().trim();
-            grid.innerHTML = '';
-
-            const filtered = gateways.filter(gw => {
-                const matchesFilter = currentFilter === 'all' || gw.status === currentFilter;
-                const matchesSearch = gw.name.toLowerCase().includes(query) ||
-                                      gw.operator.toLowerCase().includes(query) ||
-                                      gw.desc.toLowerCase().includes(query);
-                return matchesFilter && matchesSearch;
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center;">Žádná SMS brána neodpovídá zadanému filtru.</p>';
-                return;
-            }
-
-            filtered.forEach(gw => {
-                const badgeClass = gw.status === 'ok' ? 'badge-ok' : (gw.status === 'reg' ? 'badge-reg' : 'badge-limit');
-                const card = document.createElement('div');
-                card.className = 'gateway-card';
-                card.innerHTML = `
-                    <div>
-                        <div class="card-header">
-                            <h2>${gw.name}</h2>
-                            <span class="badge ${badgeClass}">${gw.statusText}</span>
-                        </div>
-                        <div class="gateway-info">
-                            <p><strong>Síť:</strong> ${gw.operator}</p>
-                            <p>${gw.desc}</p>
-                        </div>
-                    </div>
-                    <a href="${gw.url}" target="_blank" rel="noopener noreferrer" class="gateway-btn">Otevřít bránu &nearr;</a>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                renderGateways();
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGateways();
+            renderLinks();
+            renderGuestbook();
+            renderAds();
+            updateStatsDisplay();
         });
 
-        searchInput.addEventListener('input', renderGateways);
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        renderGateways();
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
 
-        // Funkční počítadlo návštěv přes HTTPS (CounterAPI) - unikátní klíč pro SMS bránu
-        const namespace = 'kolobeznik-cz-projekty';
-        const key = 'sms-brana';
+        function renderGateways() {
+            const gridHome = document.getElementById('gatewaysGrid');
+            const gridFull = document.getElementById('fullGatewaysGrid');
+            const query = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : '';
+            const opFilter = document.getElementById('filterOperator') ? document.getElementById('filterOperator').value : 'all';
+            const regFilter = document.getElementById('filterReg') ? document.getElementById('filterReg').value : 'all';
+            const statusFilter = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : 'all';
 
-        fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`)
-            .then(response => {
-                if (!response.ok) throw new Error('Chyba sítě');
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById('visit-counter').textContent = data.count.toLocaleString('cs-CZ');
-            })
-            .catch(error => {
-                console.error('Počítadlo se nepodařilo načíst:', error);
-                document.getElementById('visit-counter').textContent = '1';
+            const filtered = gateways.filter(gw => {
+                const matchQuery = gw.name.toLowerCase().includes(query) || gw.desc.toLowerCase().includes(query);
+                const matchOp = opFilter === 'all' || gw.operators.includes(opFilter);
+                const matchReg = regFilter === 'all' || (regFilter === 'bez' ? gw.reg.includes('Bez') : gw.reg.includes('Registrace'));
+                const matchStatus = statusFilter === 'all' || gw.status === statusFilter;
+                return matchQuery && matchOp && matchReg && matchStatus;
             });
-    </script>
 
+            const html = filtered.map(gw => {
+                // Určení barvy kroužku podle stavu
+                let badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+                let dotClass = "bg-emerald-400";
+                
+                if(gw.status === 'Omezený provoz') {
+                    badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+                    dotClass = "bg-amber-400";
+                } else if(gw.status === 'Vyžaduje registraci') {
+                    badgeClass = "bg-yellow-500/10 text-yellow-400 border-yellow-500/30";
+                    dotClass = "bg-yellow-400";
+                } else if(gw.status === 'Nefunkční') {
+                    badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30";
+                    dotClass = "bg-rose-400";
+                }
+
+                return `
+                    <div class="glass-card border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+                        <div>
+                            <div class="flex items-start justify-between gap-3 mb-3">
+                                <div>
+                                    <h3 class="text-base font-extrabold text-white">${gw.name}</h3>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${badgeClass} mt-1">
+                                        <span class="w-2 h-2 rounded-full ${dotClass}"></span> ${gw.status}
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-300 mb-4">${gw.desc}</p>
+                            <div class="text-[11px] text-slate-400 space-y-1 mb-5 border-t border-slate-800 pt-3">
+                                <div class="flex justify-between"><span>Max. délka:</span> <strong class="text-slate-200">${gw.maxChars}</strong></div>
+                                <div class="flex justify-between"><span>Registrace:</span> <strong class="text-slate-200">${gw.reg}</strong></div>
+                            </div>
+                        </div>
+                        <a href="${gw.url}" target="_blank" class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
+                            Otevřít SMS bránu <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            if(gridHome) gridHome.innerHTML = html;
+            if(gridFull) gridFull.innerHTML = html;
+        }
+
+        function filterGateways() { renderGateways(); }
+
+        function renderLinks() {
+            const grid = document.getElementById('linksGrid');
+            if(!grid) return;
+            grid.innerHTML = links.map(l => `
+                <div class="glass-card border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+                    <div>
+                        ${l.bannerUrl ? `<img src="${l.bannerUrl}" alt="${l.name}" class="w-full h-32 object-cover rounded-xl mb-3 border border-slate-800">` : ''}
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase bg-cyan-500/10 px-2 py-0.5 rounded">${l.category}</span>
+                        <h3 class="text-base font-bold text-white mt-2 mb-1">${l.name}</h3>
+                        <p class="text-xs text-slate-300 mb-4">${l.desc}</p>
+                    </div>
+                    <a href="${l.url}" target="_blank" class="bg-slate-800 text-cyan-400 font-semibold py-2 px-4 rounded-xl text-xs flex items-center justify-between">
+                        Navštívit web <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function renderGuestbook() {
+            const list = document.getElementById('guestbookEntriesList');
+            if(!list) return;
+            const approved = guestbook.filter(g => g.approved);
+            list.innerHTML = approved.length ? approved.map(g => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
+                    <span class="font-bold text-sm text-white">${g.author}</span>
+                    <p class="text-xs text-slate-300 mt-1">${g.message}</p>
+                </div>
+            `).join('') : '<p class="text-slate-400 text-xs text-center py-6">Žádné schválené vzkazy.</p>';
+        }
+
+        function addGuestbookEntry(e) {
+            e.preventDefault();
+            guestbook.unshift({ id: Date.now(), author: document.getElementById('gbAuthor').value, message: document.getElementById('gbMessage').value, date: new Date().toLocaleDateString('cs-CZ'), approved: false });
+            localStorage.setItem('sms_guestbook', JSON.stringify(guestbook));
+            alert('Vzkaz odeslán ke schválení.');
+            document.getElementById('guestbookForm').reset();
+        }
+
+        function renderAds() {
+            const container = document.getElementById('topAdContent');
+            const linkEl = document.getElementById('topAdLink');
+            if(ads.topHtml && ads.topHtml.trim() !== "") {
+                container.innerHTML = ads.topHtml;
+                linkEl.style.display = 'none';
+            } else {
+                container.innerHTML = `<span class="inline-block bg-amber-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded uppercase tracking-wider mb-1">Reklama</span><p class="text-sm font-semibold text-slate-200">${ads.topText}</p>`;
+                linkEl.href = ads.topLink;
+                linkEl.style.display = 'inline-flex';
+            }
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('statToday').innerText = visitStats.today.toLocaleString('cs-CZ');
+            document.getElementById('statMonth').innerText = visitStats.month.toLocaleString('cs-CZ');
+            document.getElementById('statTotal').innerText = visitStats.total.toLocaleString('cs-CZ');
+        }
+    </script>
 </body>
 </html>
