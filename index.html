@@ -75,6 +75,9 @@
                 </div>
             </div>
 
+            <!-- DYNAMICKÉ BANNERY S ODKAZY Z ADMINISTRACE -->
+            <div id="dynamicBannersSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
             <!-- VYHLEDÁVÁNÍ A BRÁNY -->
             <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-6 mb-8 shadow-xl backdrop-blur-md">
@@ -172,6 +175,8 @@
         let banners = JSON.parse(localStorage.getItem('sms_banners')) || [];
         let ads = JSON.parse(localStorage.getItem('sms_ads')) || { topText: "Reklamní prostor pro vaši nabídku", topLink: "#", topHtml: "" };
         let guestbook = JSON.parse(localStorage.getItem('sms_guestbook')) || [];
+        
+        // Načtení statistik z paměti nebo vytvoření výchozích
         let visitStats = JSON.parse(localStorage.getItem('sms_visits')) || { today: 124, month: 3410, total: 48920 };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -326,11 +331,15 @@
             document.getElementById('guestbookForm').reset();
         }
 
+        // Spolehlivé přičítání a zobrazení návštěvnosti
         function incrementAndDisplayStats() {
             visitStats.today = (visitStats.today || 0) + 1;
             visitStats.month = (visitStats.month || 0) + 1;
             visitStats.total = (visitStats.total || 0) + 1;
-            localStorage.setItem('sms_visits', JSON.stringify(visitStats));
+            
+            try {
+                localStorage.setItem('sms_visits', JSON.stringify(visitStats));
+            } catch(e) {}
 
             document.getElementById('statToday').innerText = visitStats.today.toLocaleString('cs-CZ');
             document.getElementById('statMonth').innerText = visitStats.month.toLocaleString('cs-CZ');
